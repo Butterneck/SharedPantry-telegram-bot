@@ -4,6 +4,8 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 
 # Funzioni ausiliarie
 from gestisci_ordine import start, button
+from contabilita import conto
+from gestisci_ordine import aggiungi_prodotto, rimuovi_prodotto
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -20,6 +22,7 @@ def main():
 
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CallbackQueryHandler(button))
+    dp.add_handler(CommandHandler('conto', conto))
 
     updater.start_polling()
     updater.idle()

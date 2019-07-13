@@ -2,8 +2,9 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def start(bot, update):
+    """Crea la tastiera personalizzata e invia il messaggio di presentazione"""
     keyboard = [[InlineKeyboardButton("Option 1 row 0", callback_data='aaa')],
-    
+
                         [InlineKeyboardButton("Option 1 row 1", callback_data='bbb'),
                         InlineKeyboardButton("Option 2 row 1", callback_data='ccc')]]
 
@@ -14,6 +15,7 @@ def start(bot, update):
 
 
 def button(bot, update):
+    """Gestisce la callback del prodotto scelto"""
     query = update.callback_query
 
     query.edit_message_text(text="Selected option: {}".format(query.data))
