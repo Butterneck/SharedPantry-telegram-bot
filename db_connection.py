@@ -16,13 +16,13 @@ class DB_Connection():
         self.connection = None
         self.db = None
         if path.isfile(self.path):
-            self.connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+            self.connection = sqlite3.connect(DB_PATH)
             self.db = self.connection.cursor()
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' open' + terminalColors.ENDC)
         else:
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' not found' + terminalColors.ENDC)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' initialization' + terminalColors.ENDC)
-            self.connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+            self.connection = sqlite3.connect(DB_PATH)
             self.db = self.connection.cursor()
             self.db.executescript(init_db)
             self.connection.commit()
@@ -81,7 +81,7 @@ class DB_Connection():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('INSERT INTO User_Prodotti VALUES(?, ?, ?, ?);', (uid, product_id, d, qt))
             self.connection.commit()
-            self.db.execute('SELECT Quantity FROM Prodotti WHERE rowid = ?', (product_id, ))
+            self.db.execute('SELECT Quantity FROM Prodotti WHERE rowid = ?', (uid, ))
             lastQuantity = int(self.db.fetchone()[0]);
             if lastQuantity-qt >= 0:
                 #Ci sono ancora, aggiorno semplicemente

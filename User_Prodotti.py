@@ -4,4 +4,4 @@ class User_Prodotti():
         self.user_id = user_id
         self.product_id = product_id
         self.date = date
-        self.qantity = qt
+        self.quantity = qt
