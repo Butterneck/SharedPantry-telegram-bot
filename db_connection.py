@@ -43,11 +43,11 @@ class DB_Connection():
         else:
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
 
-    def addUser(self, username):
+    def addUser(self, username, chat_id):
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
-            self.db.execute('INSERT INTO Users VALUES(?);', (username,))
-            return User(self.db.lastrowid, username)
+            self.db.execute('INSERT INTO Users VALUES(?, ?);', (username, chat_id))
+            return User(self.db.lastrowid, username, chat_id)
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
@@ -111,6 +111,19 @@ class DB_Connection():
             for el in query:
                 prodotti.append(Product(el[0], el[1], el[2], el[3]))
             return prodotti
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
+
+    def getAllChatIds(self):
+        if self.existDB():
+            chat_ids = []
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            self.db.execute('SELECT chat_id FROM Users')
+            query = self.db.fetchall()
+            for el in query:
+                chat_ids.append(el[0])
+            return chat_ids
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
