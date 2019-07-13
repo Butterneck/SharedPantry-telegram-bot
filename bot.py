@@ -1,8 +1,13 @@
 import telegram
-from telegram.ext import Updater
+import logging
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 
 # Funzioni ausiliarie
+from gestisci_ordine import start, button
 
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def main():
@@ -13,8 +18,8 @@ def main():
 
     dp = updater.dispatcher
 
-    dp.add_handler(CommandHandler("prendi", prendi))
-    dp.add_handler(CommandHandler("lista", lista))
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CallbackQueryHandler(button))
 
     updater.start_polling()
     updater.idle()
