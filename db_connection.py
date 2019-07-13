@@ -16,13 +16,13 @@ class DB_Connection():
         self.connection = None
         self.db = None
         if path.isfile(self.path):
-            self.connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+            self.connection = sqlite3.connect(DB_PATH)
             self.db = self.connection.cursor()
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' open' + terminalColors.ENDC)
         else:
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' not found' + terminalColors.ENDC)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' initialization' + terminalColors.ENDC)
-            self.connection = sqlite3.connect(DB_PATH, check_same_thread=False)
+            self.connection = sqlite3.connect(DB_PATH)
             self.db = self.connection.cursor()
             self.db.executescript(init_db)
             self.connection.commit()
@@ -71,14 +71,15 @@ class DB_Connection():
                 print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
                 return None
 
-    def addTransaction(self, username_id, product_id, qt):
+    def addTransaction(self, chat_id, product_id, qt):
         if self.existDB():
             year = datetime.date.today().year
             month = datetime.date.today().month
             day = datetime.date.today().day
             d = datetime.date(year, month, day)
+            uid = self.getuserId_fromChatId(chat_id)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
-            self.db.execute('INSERT INTO User_Prodotti VALUES(?, ?, ?, ?);', (username_id, product_id, d, qt))
+            self.db.execute('INSERT INTO User_Prodotti VALUES(?, ?, ?, ?);', (uid, product_id, d, qt))
             self.connection.commit()
             self.db.execute('SELECT Quantity FROM Prodotti WHERE rowid = ?', (product_id, ))
             lastQuantity = int(self.db.fetchone()[0]);
@@ -88,7 +89,7 @@ class DB_Connection():
             else:
                 #Prodotto è finit, impsoto la quantità a 0
                 self.modifyQuantity(product_id, 0)
-            return User_Prodotti(self.db.lastrowid, username_id, product_id, d, qt)
+            return User_Prodotti(self.db.lastrowid, uid, product_id, d, qt)
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
@@ -97,6 +98,15 @@ class DB_Connection():
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('SELECT rowid FROM Users WHERE Username = ?', (username, ))
+            return int(self.db.fetchone()[0])
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
+
+    def getuserId_fromChatId(self, chat_id):
+        if self.existDB():
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            self.db.execute('SELECT rowid FROM Users WHERE Chat_Id = ?', (chat_id, ))
             return int(self.db.fetchone()[0])
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
@@ -127,3 +137,19 @@ class DB_Connection():
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
+
+    def getAllAcquisti(self, user_id):
+        if self.existDB():
+            acquisti = []
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            self.db.execute('SELECT rowid, * FROM User')
+            query = self.db.fetchall()
+            for el in query:
+                prodotti.append(Product(el[0], el[1], el[2], el[3]))
+            return prodotti
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
+
+    def getAcquistiIn(self, data_inizio, data_fine):
+        pass
