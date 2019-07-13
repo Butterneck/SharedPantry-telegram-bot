@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def start(bot, update):
+def lista(bot, update):
     """Crea la tastiera personalizzata e invia il messaggio di presentazione"""
     keyboard = [[InlineKeyboardButton("Option 1 row 0", callback_data='aaa')],
 

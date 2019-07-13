@@ -16,13 +16,13 @@ class DB_Connection():
         self.connection = None
         self.db = None
         if path.isfile(self.path):
-            self.connection = sqlite3.connect(DB_PATH)
+            self.connection = sqlite3.connect(DB_PATH, check_same_thread=False)
             self.db = self.connection.cursor()
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' open' + terminalColors.ENDC)
         else:
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' not found' + terminalColors.ENDC)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' initialization' + terminalColors.ENDC)
-            self.connection = sqlite3.connect(DB_PATH)
+            self.connection = sqlite3.connect(DB_PATH, check_same_thread=False)
             self.db = self.connection.cursor()
             self.db.executescript(init_db)
             self.connection.commit()
