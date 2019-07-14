@@ -18,9 +18,17 @@ def nameFromPath(path):
             break
     return name[::-1]
 
-def removeDuplicateInAcquisti(acquisti)
+def removeDuplicateInAcquisti(acquisti):
     retList = []
     for acquisto in acquisti:
         if acquisto.product_id  not in list(map(lambda el: el.product_id, retList)):
             retList.append(acquisto)
     return retList
+
+def getNumAcquisti(toCheck, acquisti):
+    counter = 0
+    for acquisto in acquisti:
+        if toCheck.product_id == acquisto.product_id:
+            counter += 1
+
+    return counter

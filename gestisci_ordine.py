@@ -35,5 +35,8 @@ def lista(bot, update):
 def button(bot, update, chat_data):
     """Gestisce la callback del prodotto scelto"""
     data = update.callback_query
-    gv.db_manager.addTransaction(int(update.callback_query.message.chat_id), int(data.data), 1)
-    data.edit_message_text(text="Ottimo, torna presto a trovarci!")
+    try:
+        gv.db_manager.addTransaction(int(update.callback_query.message.chat_id), int(data.data), 1)
+        data.edit_message_text(text="Ottimo, torna presto a trovarci!")
+    except:
+        data.edit_message_text(text="Mi spiace, arrivi tardi, e' finito")

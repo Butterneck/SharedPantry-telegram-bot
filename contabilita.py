@@ -1,4 +1,5 @@
 import datetime
+from Utils import removeDuplicateInAcquisti, getNumAcquisti
 from functools import reduce
 import globalVariables as gv
 
@@ -11,13 +12,14 @@ def conto(bot, update):
     totalPrice = 0
 
     message = "Questo mese hai acquistato dalla taverna le seguenti cose: \n"
-    for acquisto in acquisti:
-        product = list(filter(lambda el : el.id == acquisto.product_id, allProducts))
-        message = message + product[0].name + " x" + str(len(product)) + " = $"
-        partialPrice = product[0].price * len(product)
+
+    acquistiSingoli = removeDuplicateInAcquisti(acquisti)
+    for acquistoSingolo in acquistiSingoli:
+        qt = getNumAcquisti(acquistoSingolo, acquisti)
+        product = list(filter(lambda el : el.id == acquistoSingolo.product_id, allProducts))
+        partialPrice = product[0].price * qt
+        message = message + product[0].name + " x" + str(qt) + " = $" + str(partialPrice) + "\n"
         totalPrice += partialPrice
-        message = message + str(totalPrice) + "\n"
 
-    message = message + "Totale debito: " + str(totalPrice)
-
+    message = message + "Totale debito: $" + str(totalPrice)
     update.message.reply_text(message)
