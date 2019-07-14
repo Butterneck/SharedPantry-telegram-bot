@@ -45,7 +45,7 @@ class DB_Connection():
 
     def addUser(self, username, chat_id):
         if self.existDB():
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Aggiunta untente' + terminalColors.ENDC)
             self.db.execute('INSERT INTO Users VALUES(?, ?);', (username, chat_id))
             self.connection.commit()
             return User(self.db.lastrowid, username, chat_id)
@@ -55,7 +55,7 @@ class DB_Connection():
 
     def addProduct(self, name, price, qt):
         if self.existDB():
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Aggiunta prodotto' + terminalColors.ENDC)
             self.db.execute('INSERT INTO Prodotti VALUES(?, ?, ?);', (name, price, qt))
             self.connection.commit()
             return Product(self.db.lastrowid, name, price, qt)
@@ -63,9 +63,18 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
+    def removeProduct(self, product_id):
+        if self.existDB():
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Rimuovi prodotto' + terminalColors.ENDC)
+            self.db.execute('DELETE FROM Prodotti WHERE rowid = ?;', (product_id))
+            self.connection.commit()
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
+
     def modifyQuantity(self, product_id, qt):
             if self.existDB():
-                print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+                print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Modifica quantità' + terminalColors.ENDC)
                 self.db.execute('UPDATE Prodotti SET Quantity = ? WHERE rowid = ?;', (qt, product_id))
                 self.connection.commit()
                 #return Product(product_id, )
@@ -77,7 +86,7 @@ class DB_Connection():
         if self.existDB():
             d = datetime.date.today()
             uid = self.getuserId_fromChatId(chat_id)
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Aggiunta transazione' + terminalColors.ENDC)
             self.db.execute('SELECT Quantity FROM Prodotti WHERE rowid = ?', (product_id, ))
             lastQuantity = int(self.db.fetchone()[0]);
 
@@ -100,7 +109,7 @@ class DB_Connection():
 
     def getUserId(self, username):
         if self.existDB():
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getUserId' + terminalColors.ENDC)
             self.db.execute('SELECT rowid FROM Users WHERE Username = ?', (username, ))
             return int(self.db.fetchone()[0])
         else:
@@ -109,7 +118,7 @@ class DB_Connection():
 
     def getuserId_fromChatId(self, chat_id):
         if self.existDB():
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getUserId_fromChatId' + terminalColors.ENDC)
             self.db.execute('SELECT rowid FROM Users WHERE Chat_Id = ?', (chat_id, ))
             i = self.db.fetchone()[0]
             return i
@@ -120,7 +129,7 @@ class DB_Connection():
     def getAllProduct(self):
         if self.existDB():
             prodotti = []
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getAllProduct' + terminalColors.ENDC)
             self.db.execute('SELECT rowid, * FROM Prodotti')
             query = self.db.fetchall()
             for el in query:
@@ -133,7 +142,7 @@ class DB_Connection():
     def getAllChatIds(self):
         if self.existDB():
             chat_ids = []
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getAllChatIds' + terminalColors.ENDC)
             self.db.execute('SELECT chat_id FROM Users')
             query = self.db.fetchall()
             for el in query:
@@ -147,7 +156,7 @@ class DB_Connection():
         if self.existDB():
             acquisti = []
             uid = self.getuserId_fromChatId(chat_id)
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getAllAcquisti' + terminalColors.ENDC)
             self.db.execute('SELECT rowid,* FROM User_Prodotti WHERE User_Id = ?', (uid, ))
             query = self.db.fetchall()
             for el in query:
@@ -161,7 +170,7 @@ class DB_Connection():
         if self.existDB():
             acquisti = []
             uid = self.getuserId_fromChatId(chat_id)
-            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getAcquistiIn' + terminalColors.ENDC)
             self.db.execute('SELECT rowid,* FROM User_Prodotti WHERE User_Id = ? AND Data >= ? AND Data <= ?', (uid, data_inizio, data_fine))
             query = self.db.fetchall()
             for el in query:
