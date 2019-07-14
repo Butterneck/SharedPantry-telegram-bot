@@ -47,6 +47,7 @@ class DB_Connection():
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('INSERT INTO Users VALUES(?, ?);', (username, chat_id))
+            self.connection.commit()
             return User(self.db.lastrowid, username, chat_id)
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
@@ -66,6 +67,7 @@ class DB_Connection():
             if self.existDB():
                 print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
                 self.db.execute('UPDATE Prodotti SET Quantity = ? WHERE rowid = ?;', (qt, product_id))
+                self.connection.commit()
                 #return Product(product_id, )
             else:
                 print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
@@ -107,7 +109,8 @@ class DB_Connection():
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('SELECT rowid FROM Users WHERE Chat_Id = ?', (chat_id, ))
-            return int(self.db.fetchone()[0])
+            i = self.db.fetchone()[0]
+            return self.db.fetchone()[0]
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
