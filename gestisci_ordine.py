@@ -1,5 +1,4 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-
 import globalVariables as gv
 
 def lista(bot, update):
