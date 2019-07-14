@@ -13,7 +13,7 @@ def lista(bot, update):
         row = []
         for j in range(3):
             product = products[i * 3 + j]
-            nome = product.name
+            nome = product.name + ": " + str(product.quantity)
             row.append(InlineKeyboardButton(nome, callback_data=product.id))
 
         keyboard.append(row)
@@ -21,7 +21,7 @@ def lista(bot, update):
     row = []
     for i in range(len(products) % 3):
         product = products[len(products) - i - 1]
-        nome = product.name
+        nome = product.name + ": " + str(product.quantity)
         row.append(InlineKeyboardButton(nome, callback_data=product.id))
 
     keyboard.append(row)
