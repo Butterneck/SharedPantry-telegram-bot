@@ -13,18 +13,19 @@ def lista(bot, update):
         row = []
         for j in range(3):
             product = products[i * 3 + j]
-            row.append(InlineKeyboardButton(product.name, callback_data=product.id))
+            nome = product.name + " : " + str(product.id)
+            row.append(InlineKeyboardButton(nome, callback_data=product.id))
 
         keyboard.append(row)
 
     row = []
     for i in range(len(products) % 3):
         product = products[len(products) - i - 1]
-        row.append(InlineKeyboardButton(product.name, callback_data=product.id))
+        nome = product.name + " : " + str(product.id)
+        row.append(InlineKeyboardButton(nome, callback_data=product.id))
 
     keyboard.append(row)
 
-    print(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     update.message.reply_text("Questo e' quello che offre la taverna, scegli responsabilmente",
@@ -34,5 +35,6 @@ def lista(bot, update):
 def button(bot, update, chat_data):
     """Gestisce la callback del prodotto scelto"""
     product = update.callback_query
+    print(product.data)
 
-    gv.db_manager.addTransaction(update.callback_query.message.chat_id, product.id, 1)
+    print(gv.db_manager.addTransaction(int(update.callback_query.message.chat_id), int(product.data), 1).quantity)

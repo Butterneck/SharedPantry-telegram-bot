@@ -110,7 +110,7 @@ class DB_Connection():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('SELECT rowid FROM Users WHERE Chat_Id = ?', (chat_id, ))
             i = self.db.fetchone()[0]
-            return self.db.fetchone()[0]
+            return i
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
