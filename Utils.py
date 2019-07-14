@@ -17,3 +17,10 @@ def nameFromPath(path):
         else:
             break
     return name[::-1]
+
+def removeDuplicateInAcquisti(acquisti)
+    retList = []
+    for acquisto in acquisti:
+        if acquisto.product_id  not in list(map(lambda el: el.product_id, retList)):
+            retList.append(acquisto)
+    return retList
