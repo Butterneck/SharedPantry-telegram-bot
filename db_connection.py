@@ -78,12 +78,17 @@ class DB_Connection():
             d = datetime.date.today()
             uid = self.getuserId_fromChatId(chat_id)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
-            self.db.execute('INSERT INTO User_Prodotti VALUES(?, ?, ?, ?);', (uid, product_id, d, qt))
-            self.connection.commit()
             self.db.execute('SELECT Quantity FROM Prodotti WHERE rowid = ?', (product_id, ))
             lastQuantity = int(self.db.fetchone()[0]);
+
+            if lastQuantity == 0:
+                #Eccezione
+                raise Exception("Acquisto non possibile")
+
             if lastQuantity-qt >= 0:
                 #Ci sono ancora, aggiorno semplicemente
+                self.db.execute('INSERT INTO User_Prodotti VALUES(?, ?, ?, ?);', (uid, product_id, d, qt))
+                self.connection.commit()
                 self.modifyQuantity(product_id, lastQuantity-qt)
             else:
                 #Prodotto è finit, impsoto la quantità a 0
