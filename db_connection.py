@@ -75,10 +75,7 @@ class DB_Connection():
 
     def addTransaction(self, chat_id, product_id, qt):
         if self.existDB():
-            year = datetime.date.today().year
-            month = datetime.date.today().month
-            day = datetime.date.today().day
-            d = datetime.date(year, month, day)
+            d = datetime.date.today()
             uid = self.getuserId_fromChatId(chat_id)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('INSERT INTO User_Prodotti VALUES(?, ?, ?, ?);', (uid, product_id, d, qt))
@@ -110,7 +107,7 @@ class DB_Connection():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
             self.db.execute('SELECT rowid FROM Users WHERE Chat_Id = ?', (chat_id, ))
             i = self.db.fetchone()[0]
-            return self.db.fetchone()[0]
+            return i
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
@@ -141,18 +138,30 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
-    def getAllAcquisti(self, user_id):
+    def getAllAcquisti(self, chat_id):
         if self.existDB():
             acquisti = []
+            uid = self.getuserId_fromChatId(chat_id)
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
-            self.db.execute('SELECT rowid, * FROM User')
+            self.db.execute('SELECT rowid,* FROM User_Prodotti WHERE User_Id = ?', (uid, ))
             query = self.db.fetchall()
             for el in query:
-                prodotti.append(Product(el[0], el[1], el[2], el[3]))
-            return prodotti
+                acquisti.append(User_Prodotti(el[0], el[1], el[2], el[3], el[4]))
+            return acquisti
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
-    def getAcquistiIn(self, data_inizio, data_fine):
-        pass
+    def getAcquistiIn(self, chat_id, data_inizio, data_fine):
+        if self.existDB():
+            acquisti = []
+            uid = self.getuserId_fromChatId(chat_id)
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
+            self.db.execute('SELECT rowid,* FROM User_Prodotti WHERE User_Id = ? AND Data >= ? AND Data <= ?', (uid, data_inizio, data_fine))
+            query = self.db.fetchall()
+            for el in query:
+                acquisti.append(User_Prodotti(el[0], el[1], el[2], el[3], el[4]))
+            return acquisti
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
