@@ -6,6 +6,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+AUTH = range(1)
+
 NOME, PREZZO, QUANTITA = range(3)
 
 AGGIORNA_SELEZIONE, AGGIORNA_QUANTITA = range(2)
@@ -49,19 +51,6 @@ def done(bot, update, user_data):
     return ConversationHandler.END
 
 
-def start(bot, update):
-    if (int(update.message.chat_id) not in gv.db_manager.getAllChatIds()) :
-        update.message.reply_text("Benvenuto, usa il comando /prendi per selezionare cosa hai preso dalla dispensa")
-        user = update.message.from_user
-        if (user.first_name):
-            u = gv.db_manager.addUser(user.first_name, update.message.chat_id)
-        else:
-            u = gv.db_manager.addUser(user.username, update.message.chat_id)
-        print(u.id, '\t', u.nome, '\t', u.chat_id)
-    else:
-        update.message.reply_text("Bentornato, usa il comando /prendi per selezionare cosa hai preso dalla dispensa")
-
-
 def aggiorna_dispensa(bot, update):
     products = gv.db_manager.getAllProduct()
     keyboard = []
@@ -103,8 +92,30 @@ def aggiorna_quantita(bot, update, user_data):
     qtToAdd = int(update.message.text)
     gv.db_manager.modifyQuantity(user_data['product_id'], currentQt + qtToAdd)
     update.message.reply_text("Ottimo, aggiornato!")
+    return ConversationHandler.END
 
 
+def start(bot, update):
+    if (int(update.message.chat_id) not in gv.db_manager.getAllChatIds()) :
+        update.message.reply_text("Benvenuto, inserisci la password per accedere")
+        return AUTH
+    else:
+        update.message.reply_text("Bentornato, usa il comando /prendi per selezionare cosa hai preso dalla dispensa")
+        return ConversationHandler.END
+
+
+def auth(bot, update, user_data):
+    if (update.message.text == "Bordello") :
+        update.message.reply_text("Benvenuto, usa il comando /prendi per selezionare cosa hai preso dalla dispensa")
+        user = update.message.from_user
+        if (user.first_name):
+            u = gv.db_manager.addUser(user.first_name, update.message.chat_id)
+        else:
+            u = gv.db_manager.addUser(user.username, update.message.chat_id)
+        return ConversationHandler.END
+    else:
+        update.message.reply_text("Password errata, digita /start per riprovare")
+        return ConversationHandler.END
 
 def main():
     TOKEN = "757571867:AAHrPE1iyZ5FrWoH412U9Ubq6sO-tFA29jM"
@@ -113,6 +124,17 @@ def main():
 
 
     dp = updater.dispatcher
+
+
+    conv_handlerStart = ConversationHandler(
+        entry_points = [CommandHandler('start', start)],
+
+        states = {
+            AUTH: [MessageHandler(Filters.text, auth, pass_user_data=True)]
+        },
+
+        fallbacks = [CommandHandler('fatto', done, pass_user_data=True)]
+    )
 
 
     conv_handlerAggiornaDispensa = ConversationHandler(
@@ -138,9 +160,9 @@ def main():
         fallbacks=[CommandHandler('fatto', done, pass_user_data=True)]
     )
 
+    dp.add_handler(conv_handlerStart)
     dp.add_handler(conv_handlerNuovoProdotto)
     dp.add_handler(conv_handlerAggiornaDispensa)
-    dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('prendi', lista))
     dp.add_handler(CallbackQueryHandler(button, pass_chat_data=True))
     dp.add_handler(CommandHandler('conto', conto))
