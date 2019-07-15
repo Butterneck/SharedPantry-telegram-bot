@@ -179,3 +179,29 @@ class DB_Connection():
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
+
+    def getAllDebits(self):
+        if self.existDB():
+            acquisti = []
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getAllAcquisti' + terminalColors.ENDC)
+            self.db.execute('SELECT rowid, * FROM User_Prodotti')
+            query = self.db.fetchall()
+            for el in query:
+                acquisti.append(User_Prodotti(el[0], el[1], el[2], el[3], el[4]))
+            return acquisti
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
+
+    def getAllusers(self):
+        if self.existDB():
+            utenti = []
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getAcquistiIn' + terminalColors.ENDC)
+            self.db.execute('SELECT rowid,* FROM Users')
+            query = self.db.fetchall()
+            for el in query:
+                utenti.append(User(el[0], el[1], el[2]))
+            return utenti
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return None
