@@ -164,7 +164,7 @@ def main():
 
 
     conv_handlerAggiornaDispensa = ConversationHandler(
-        entry_points = [CommandHandler('aggiorna', aggiorna_dispensa)],
+        entry_points = [CommandHandler('gestisci', aggiorna_dispensa)],
 
         states = {
             AGGIORNA_SELEZIONE: [CallbackQueryHandler(aggiornaProdottiButton, pass_chat_data=True, pass_user_data=True)],
