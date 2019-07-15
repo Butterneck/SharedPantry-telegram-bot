@@ -18,7 +18,7 @@ def conto(bot, update):
         qt = getNumAcquisti(acquistoSingolo, acquisti)
         product = list(filter(lambda el : el.id == acquistoSingolo.product_id, allProducts))
         partialPrice = product[0].price * qt
-        message = message + product[0].name + " x" + str(qt) + " = $" + str(partialPrice) + "\n"
+        message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice) + "\n"
         totalPrice += partialPrice
 
     message = message + "Totale debito: $" + str(totalPrice)
