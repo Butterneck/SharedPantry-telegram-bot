@@ -15,6 +15,6 @@ CREATE TABLE User_Prodotti(
 	Data Date NOT NULL,
 	Quantity INT NOT NULL,
 
-  FOREIGN KEY(User_Id) REFERENCES Users(Id),
-  FOREIGN KEY(Prodotto_Id) REFERENCES Prodotti(Id)
+  FOREIGN KEY(User_Id) REFERENCES Users(ROWID),
+  FOREIGN KEY(Prodotto_Id) REFERENCES Prodotti(ROWID)
 );
