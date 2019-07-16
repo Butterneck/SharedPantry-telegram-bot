@@ -5,8 +5,9 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 
 
-#admin_id = 879140791
-admin_id = 32345162
+#admin_id = 879140791 #Ciano
+admin_id = 32345162 #Filippo
+#admin_id = 179624122 #Marco
 
 
 lock = emojize(":lock:", use_aliases=True)
