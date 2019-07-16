@@ -1,4 +1,4 @@
-from db_connection import *
+from db_connection_postgresql import *
 
 global db_manager
 db_manager = DB_Connection()

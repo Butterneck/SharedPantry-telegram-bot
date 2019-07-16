@@ -1,12 +1,12 @@
-from db_connection import *
+from db_connection_postgresql import *
 import os
 import datetime
 
-os.system("rm dispensa.db")
+#os.system("rm dispensa.db")
 
 db_manager = DB_Connection()
-db_manager.addUser("Marco", 1)
-db_manager.addUser("Filippo", 2)
+#db_manager.addUser("Scanta", 45)
+#db_manager.addUser("Mese", 64)
 
 db_manager.addProduct("Caramelle", 5.0, 10)
 db_manager.addProduct("Birra", 2.25, 20)
