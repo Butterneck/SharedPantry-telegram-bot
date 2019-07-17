@@ -3,6 +3,7 @@ import logging
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters, RegexHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
+import os
 
 
 #admin_id = 879140791 #Ciano
@@ -147,6 +148,7 @@ def auth(bot, update, user_data):
 def main():
     TOKEN = "757571867:AAHrPE1iyZ5FrWoH412U9Ubq6sO-tFA29jM"
     updater = Updater(TOKEN)
+    PORT = int(os.environ.get('PORT', '8443'))
     bot = telegram.Bot(TOKEN)
 
 
@@ -184,7 +186,10 @@ def main():
     dp.add_handler(CallbackQueryHandler(button, pass_chat_data=True))
     dp.add_handler(CommandHandler('conto', conto))
 
-    updater.start_polling()
+    updater.start_webhook(listen='0.0.0.0',
+                                            port=PORT,
+                                            url_path=TOKEN)
+    updater.bot.set_webhook("https://cianobot.herokuapp.com/" + TOKEN)
     updater.idle()
 
 
