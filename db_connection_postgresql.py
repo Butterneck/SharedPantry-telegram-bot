@@ -10,14 +10,12 @@ from User import *
 from User_Prodotti import *
 from Prodotti import *
 
-#Da modificare quando verrà portato su heroku
-#DB_URL = os.environ['DATABASE_URL']
-DB_URL = "postgres://eyicwwxwnxuxou:675f943b8955a12022eab26b184c193d3c1219c4999688d899cfb3687f33e1b4@ec2-54-217-234-157.eu-west-1.compute.amazonaws.com:5432/df8fia9ccanh45"
-
 init_db = open("dispensa.sql").read()
 
 class DB_Connection():
-    def __init__(self):
+    # Da modificare quando verrà portato su heroku
+    # DB_URL = os.environ['DATABASE_URL']
+    def __init__(self, DB_URL = "postgres://eyicwwxwnxuxou:675f943b8955a12022eab26b184c193d3c1219c4999688d899cfb3687f33e1b4@ec2-54-217-234-157.eu-west-1.compute.amazonaws.com:5432/df8fia9ccanh45"):
         self.path = DB_URL
         self.connection = psycopg2.connect(DB_URL, sslmode='require')
         self.db = self.connection.cursor()
@@ -42,7 +40,7 @@ class DB_Connection():
     def startDB(self):
         if self.existDB() == False:
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' initialization' + terminalColors.ENDC)
-            self.db.executescript(init_db)
+            self.db.execute(init_db)
             self.connection.commit()
         else:
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...OK' + terminalColors.ENDC)
@@ -57,6 +55,17 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
+    def removeUser(self, chat_id):
+        if self.existDB():
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Rimuozione utente' + terminalColors.ENDC)
+            uid = str(self.getuserId_fromChatId(chat_id))
+            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (uid, ))
+            self.connection.commit()
+            return True
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+            return False
+
     def addProduct(self, name, price, qt):
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Aggiunta prodotto' + terminalColors.ENDC)
@@ -70,11 +79,12 @@ class DB_Connection():
     def removeProduct(self, product_id):
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Rimuovi prodotto' + terminalColors.ENDC)
-            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (product_id))
+            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (product_id, ))
             self.connection.commit()
+            return True
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
-            return None
+            return False
 
     def modifyQuantity(self, product_id, qt):
             if self.existDB():
@@ -111,6 +121,16 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
+    def removeTransaction(self, transaction_id):
+        if self.existDB():
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...Rimozione transazione' + terminalColors.ENDC)
+            self.db.execute('DELETE FROM User_Prodotti WHERE Id = %s;', (transaction_id, ))
+            self.connection.commit()
+            return True
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path + ' not found' + terminalColors.ENDC)
+            return False
+
     def getUserId(self, username):
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getUserId' + terminalColors.ENDC)
@@ -124,8 +144,11 @@ class DB_Connection():
         if self.existDB():
             print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getUserId_fromChatId' + terminalColors.ENDC)
             self.db.execute('SELECT Id FROM Users WHERE Chat_Id = %s', (chat_id, ))
-            i = self.db.fetchone()[0]
-            return i
+            query = self.db.fetchone()
+            if query is not None:
+                return query[0]
+            else:
+                return None
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
@@ -209,3 +232,19 @@ class DB_Connection():
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
+
+    def dropAllTables(self):
+        if self.existDB():
+            print(terminalColors.WARNING + '[Database]: ' + self.path + '... Dropping tables' + terminalColors.ENDC)
+            self.db.execute('DROP TABLE IF EXISTS users, prodotti, user_prodotti;')
+            self.connection.commit()
+            self.db.execute(init_db)
+            self.connection.commit()
+            print(terminalColors.OKGREEN + '[Database]: ' + self.path + ' initialization' + terminalColors.ENDC)
+            return True
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path + ' not found' + terminalColors.ENDC)
+            return False
+
+    def cleanCursor(self):
+        self.connection.commit()
