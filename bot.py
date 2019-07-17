@@ -6,10 +6,11 @@ from emoji import emojize
 import os
 
 
-#admin_id = 879140791 #Ciano
-admin_id = 32345162 #Filippo
-#admin_id = 179624122 #Marco
+Ciano = 879140791 #Ciano
+Filippo = 32345162 #Filippo
+Marco = 179624122 #Marco
 
+admin_id = [Ciano, Filippo, Marco]
 
 lock = emojize(":lock:", use_aliases=True)
 unlock = emojize(":unlock:", use_aliases=True)
@@ -64,7 +65,7 @@ def done(bot, update, user_data):
 
 
 def aggiorna_dispensa(bot, update):
-    if int(update.message.chat_id) != admin_id:
+    if int(update.message.chat_id) not in admin_id:
         return ConversationHandler.END
     products = gv.db_manager.getAllProduct()
     keyboard = []
