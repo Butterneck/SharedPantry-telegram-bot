@@ -235,7 +235,7 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
-    def dropAllTables(self):
+    """def dropAllTables(self):
         if self.existDB():
             print(terminalColors.WARNING + '[Database]: ' + self.path + '... Dropping tables' + terminalColors.ENDC)
             self.db.execute('DROP TABLE IF EXISTS users, prodotti, user_prodotti;')
@@ -246,7 +246,7 @@ class DB_Connection():
             return True
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path + ' not found' + terminalColors.ENDC)
-            return False
+            return False"""
 
     def cleanCursor(self):
         self.connection.commit()

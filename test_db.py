@@ -31,10 +31,10 @@ product_retrieved = []
 
 class Test_db(object):
 
-    def test_dropAllTables(self):
+    """def test_dropAllTables(self):
         gv.db_manager_for_test.cleanCursor()
         print("Running test_dropAllTables")
-        assert gv.db_manager_for_test.dropAllTables()
+        assert gv.db_manager_for_test.dropAllTables()"""
 
     def test_addUser(self):
         gv.db_manager_for_test.cleanCursor()
@@ -106,4 +106,3 @@ class Test_db(object):
         u: bool
         for u in removed_user:
             assert u
-
