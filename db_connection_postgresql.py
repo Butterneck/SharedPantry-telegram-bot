@@ -10,9 +10,8 @@ from User import *
 from User_Prodotti import *
 from Prodotti import *
 
-#Da modificare quando verrà portato su heroku
-#DB_URL = os.environ['DATABASE_URL']
-DB_URL = "postgres://eyicwwxwnxuxou:675f943b8955a12022eab26b184c193d3c1219c4999688d899cfb3687f33e1b4@ec2-54-217-234-157.eu-west-1.compute.amazonaws.com:5432/df8fia9ccanh45"
+DB_URL = os.environ['DATABASE_URL']
+#DB_URL = "postgres://eyicwwxwnxuxou:675f943b8955a12022eab26b184c193d3c1219c4999688d899cfb3687f33e1b4@ec2-54-217-234-157.eu-west-1.compute.amazonaws.com:5432/df8fia9ccanh45"
 
 init_db = open("dispensa.sql").read()
 
