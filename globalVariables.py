@@ -17,3 +17,13 @@ db_manager_for_test = DB_Connection(DB_URL="postgres://kztdqvcvabikuw:558e67b9ac
 
 global nuovoProdotto
 nuovoProdotto = None
+
+global Ciano
+Ciano = 879140791 #Ciano
+global Filippo
+Filippo = 32345162 #Filippo
+global Marco
+Marco = 179624122 #Marco
+
+global admin_id
+admin_id = [Ciano, Filippo, Marco]
