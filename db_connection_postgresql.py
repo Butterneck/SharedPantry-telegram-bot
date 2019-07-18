@@ -156,6 +156,20 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
             return None
 
+        def getUsername_fromChatId(self, chat_id):
+            if self.existDB():
+                print(terminalColors.OKGREEN + '[Database]: ' + self.path + '...getUsername_fromChatId' + terminalColors.ENDC)
+                self.db.execute('SELECT Username FROM Users WHERE Chat_Id = %s', (chat_id, ))
+                query = self.db.fetchone()
+                if query is not None:
+                    return query[0]
+                else:
+                    return None
+            else:
+                print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + terminalColors.ENDC)
+                return None
+
+
     def getAllProduct(self):
         if self.existDB():
             prodotti = []
