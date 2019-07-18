@@ -21,5 +21,8 @@ def conto(bot, update):
         message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice) + "\n"
         totalPrice += partialPrice
 
-    message = message + "Totale debito: $" + str(totalPrice)
-    update.message.reply_text(message)
+    if totalPrice:
+        message = message + "Totale debito: $" + str(totalPrice)
+        update.message.reply_text(message)
+    else:
+        update.message.reply_text("Non hai ancora acquistato niente dalla taverna questo mese")
