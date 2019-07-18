@@ -23,3 +23,33 @@ def conto(bot, update):
 
     message = message + "Totale debito: $" + str(totalPrice)
     update.message.reply_text(message)
+
+
+def debitoMensile(bot):
+    chat_ids = gv.db_manager.getAllChatIds()
+    messaggio_di_debito = "Ecco chi ha acquistato dalla taverna questo mese:\n"
+
+    for chat_id in chat_ids:
+        acquisti = gv.db_manager.getAcquistiIn(chat_id, datetime.date.today().replace(day=1), datetime.date.today())
+
+        allProducts = gv.db_manager.getAllProduct()
+
+        totalPrice = 0
+
+        message = "Ecco il resoconto degli acquiti nella dispensa della taverna del mese appena trascorso: \n"
+
+        acquistiSingoli = removeDuplicateInAcquisti(acquisti)
+        for acquistoSingolo in acquistiSingoli:
+            qt = getNumAcquisti(acquistoSingolo, acquisti)
+            product = list(filter(lambda el : el.id == acquistoSingolo.product_id, allProducts))
+            partialPrice = product[0].price * qt
+            message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice) + "\n"
+            totalPrice += partialPrice
+
+        message = message + "Totale debito: $" + str(totalPrice) + "\n dovrai saldare il debito direttamente con Ciano"
+        messaggio_di_debito = messaggio_di_debito + gv.db_manager.getUsername_fromChatId(chat_id) + ": $" + str(totalPrice) + "\n"
+
+        update.message.reply_text(message)
+
+
+    bot.sendMessage(chat_id=gv.Filippo, text=messaggio_di_debito)
