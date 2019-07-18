@@ -4,6 +4,7 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, Conversa
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 import os
+from threading import Thread
 
 
 lock = emojize(":lock:", use_aliases=True)
@@ -141,6 +142,12 @@ def auth(bot, update, user_data):
         return ConversationHandler.END
 
 def main():
+
+    # Inizializzo il thread per il check del contomensile
+    checkActivator = MyThread()
+    checkActivator.start()
+
+
     TOKEN = "757571867:AAHrPE1iyZ5FrWoH412U9Ubq6sO-tFA29jM"
     updater = Updater(TOKEN)
     PORT = int(os.environ.get('PORT', '8443'))
