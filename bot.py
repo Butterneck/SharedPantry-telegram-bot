@@ -91,7 +91,6 @@ def aggiorna_dispensa(bot, update):
 
 def aggiornaProdottiButton(bot, update, user_data, chat_data):
     data = update.callback_query
-    print(data.data)
     if data.data == 'aggiungi':
         data.edit_message_text(text="Dimmi il nome del prodotto che vuoi aggiungere")
         return NOME
@@ -143,15 +142,14 @@ def auth(bot, update, user_data):
 
 def main():
 
-    # Inizializzo il thread per il check del contomensile
-    checkActivator = MyThread()
-    checkActivator.start()
-
-
     TOKEN = "757571867:AAHrPE1iyZ5FrWoH412U9Ubq6sO-tFA29jM"
     updater = Updater(TOKEN)
     PORT = int(os.environ.get('PORT', '8443'))
     bot = telegram.Bot(TOKEN)
+
+    # Inizializzo il thread per il check del contomensile
+    checkActivator = MyThread(bot)
+    checkActivator.start()
 
 
     dp = updater.dispatcher
