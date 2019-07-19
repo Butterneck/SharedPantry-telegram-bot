@@ -1,3 +1,3 @@
 class Activator():
-    def __init__(self):
-        self.activator = 0
+    def __init__(self, activator):
+        self.activator = activator
