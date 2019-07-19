@@ -1,6 +1,7 @@
 from threading import Thread
 import globalVariables as gv
 from contabilita import debitoMensile
+import time
 
 class MyThread(Thread):
     def __init__(self):
@@ -13,3 +14,4 @@ class MyThread(Thread):
                 debitoMensile()
                 gv.db_manager.deactivateActivator() # reset activator value
                 return
+            time.sleep(3000)

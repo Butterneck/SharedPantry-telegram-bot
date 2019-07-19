@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, Conversa
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 import os
-from threading import Thread
+from MyThread import MyThread
 
 
 lock = emojize(":lock:", use_aliases=True)

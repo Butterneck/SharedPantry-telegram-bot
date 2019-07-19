@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS Users, Prodotti, User_Prodotti;
+DROP TABLE IF EXISTS Users, Prodotti, User_Prodotti, Debits, Activator;
 
 CREATE TABLE Users(
     Id SERIAL PRIMARY KEY,
@@ -22,4 +22,19 @@ CREATE TABLE User_Prodotti(
 
     FOREIGN KEY(User_Id) REFERENCES Users(Id),
     FOREIGN KEY(Prodotto_Id) REFERENCES Prodotti(Id)
+);
+
+CREATE TABLE Debits(
+    Id SERIAL PRIMARY KEY,
+    User_Id INT NOT NULL,
+    Quantity INT NOT NULL,
+    Month INT NOT NULL,
+    Paid INT NOT NULL,
+
+    FOREIGN KEY(User_Id) REFERENCES Users(Id)
+);
+
+CREATE TABLE Activator(
+    Id SERIAL PRIMARY KEY,
+    Activator INT NOT NULL
 );
