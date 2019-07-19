@@ -96,6 +96,7 @@ class Test_db(object):
         for p in removed_product:
             assert p
 
+
     def test_removeUser(self):
         gv.db_manager_for_test.cleanCursor()
         removed_user = []
@@ -105,3 +106,13 @@ class Test_db(object):
         u: bool
         for u in removed_user:
             assert u
+
+    def test_activateActivator(self):
+        gv.db_manager.cleanCursor()
+        gv.db_manager_for_test.activateActivator()
+        assert gv.db_manager_for_test.checkActivator() == True
+
+    def test_deactivateActivator(self):
+        gv.db_manager_for_test.cleanCursor()
+        gv.db_manager_for_test.deactivateActivator()
+        assert gv.db_manager_for_test.checkActivator() == False

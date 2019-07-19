@@ -259,7 +259,7 @@ class DB_Connection():
     def dropAllTables(self):
         if self.existDB():
             print(terminalColors.WARNING + '[Database]: ' + self.path + '... Dropping tables' + end)
-            self.db.execute('DROP TABLE IF EXISTS users, prodotti, user_prodotti;')
+            self.db.execute('DROP TABLE IF EXISTS users, prodotti, user_prodotti, debits, activator;')
             self.connection.commit()
             self.db.execute(init_db)
             self.connection.commit()
@@ -269,10 +269,18 @@ class DB_Connection():
             print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path + ' not found' + end)
             return False
 
+    def activateActivator(self):
+        if self.existDB():
+            print(intro + self.path + '...activateActivator' + end)
+            self.db.execute('UPDATE Activator SET Activator = 1')
+            self.connection.commit()
+        else:
+            print(intro + self.path + ' not found' + end)
+
     def deactivateActivator(self):
         if self.existDB():
             print(intro + self.path  + '...deactivateActivator' + end)
-            self.db.execute('UPDATE Activator SET Activator = 1')
+            self.db.execute('UPDATE Activator SET Activator = 0')
             self.connection.commit()
         else:
             print(intro + self.path  + ' not found' + end)
@@ -280,8 +288,15 @@ class DB_Connection():
     def checkActivator(self):
         if self.existDB():
             print(intro + self.path  + '...checkActivator' + end)
+
+            self.db.execute('SELECT * FROM Activator')
+            if len(self.db.fetchall()) == 0:
+                print(intro + self.path + '...createActivatorRow' + end)
+                self.db.execute('INSERT INTO Activator(activator) VALUES(1)')
+                self.connection.commit()
+
             self.db.execute('SELECT Activator FROM Activator')
-            if self.db.fetchone():
+            if self.db.fetchone()[0]:
                 print(intro + self.path  + ' activator activated' + end)
                 return True
             return False
