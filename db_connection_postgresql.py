@@ -298,7 +298,9 @@ class DB_Connection():
             self.db.execute('SELECT Activator FROM Activator')
             if self.db.fetchone()[0]:
                 print(intro + self.path  + ' activator activated' + end)
+                print('Done')
                 return True
+            print('Done')
             return False
         else:
             print(intro + self.path  + ' not found' + end)
