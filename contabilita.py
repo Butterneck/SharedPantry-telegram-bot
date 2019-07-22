@@ -27,9 +27,6 @@ def conto(bot, update):
     else:
         update.message.reply_text("Non hai ancora acquistato niente dalla taverna questo mese")
 
-    message = message + "Totale debito: $" + str(totalPrice)
-    update.message.reply_text(message)
-
 
 def debitoMensile(bot):
     chat_ids = gv.db_manager.getAllChatIds()
