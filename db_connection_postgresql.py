@@ -4,6 +4,7 @@ from Utils import *
 import datetime
 import psycopg2
 import os
+from sys import exit
 
 
 from User import *
@@ -26,7 +27,16 @@ class DB_Connection():
 
     def __init__(self, DB_URL):
         self.path = DB_URL
-        self.connection = psycopg2.connect(DB_URL, sslmode='require')
+        self.connection = None
+        try:
+            self.connection = psycopg2.connect(DB_URL, sslmode='require')
+        except psycopg2.OperationalError as e:
+            print(terminalColors.FAIL + "Database not reachable." + terminalColors.ENDC)
+            print(terminalColors.FAIL + "Exit" + terminalColors.ENDC)
+            exit(1)
+        else:
+            print(terminalColors.OKGREEN + "[Database]:" + self.path + " reachable")
+
         self.db = self.connection.cursor()
         self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator');")
         if self.db.fetchone()[0]:
