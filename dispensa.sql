@@ -15,11 +15,8 @@ CREATE TABLE Prodotti(
 
 CREATE TABLE User_Prodotti(
     Id SERIAL PRIMARY KEY,
-    User_Id INT NOT NULL,
-    Prodotto_Id INT NOT NULL,
+    User_Id INT NOT NULL REFERENCES Users(Id) ON DELETE NO ACTION ,
+    Prodotto_Id INT NOT NULL REFERENCES Prodotti(Id) ON DELETE NO ACTION,
 	Data Date NOT NULL,
-	Quantity INT NOT NULL,
-
-    FOREIGN KEY(User_Id) REFERENCES Users(Id),
-    FOREIGN KEY(Prodotto_Id) REFERENCES Prodotti(Id)
+	Quantity INT NOT NULL
 );

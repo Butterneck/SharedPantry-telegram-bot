@@ -1,13 +1,23 @@
 import pytest
 import globalVariables as gv
 import datetime
+from db_connection_postgresql import DB_Connection
+import globalVariables as gv
+
+'''
+In caso di fallimento dei test:
+    * Aggiornare l'URL per l'istaziazione di db_manager_for_test 
+'''
+db_manager_for_test = DB_Connection(DB_URL=gv.DB_URL_FOR_TEST)
+
 
 user_data = [("Marco", 1),
              ("Filippo", 2),
              ("Scanta", 3),
              ("Mase", 4),
              ("Ciano", 34),
-             ("Gul", 78)]
+             ("Gul", 78),
+             ("Marco_Admin", 179624122)]
 
 product_data = [("Breh", 0.5, 10),
                 ("Fonzi", 0.25, 25),
@@ -31,77 +41,83 @@ product_retrieved = []
 
 class Test_db(object):
 
-    def test_dropAllTables(self):
-        gv.db_manager_for_test.cleanCursor()
-        assert gv.db_manager_for_test.dropAllTables()
+    def test_dropAllTables_start(self):
+        print("Dropping data to begin automatic tests")
+        db_manager_for_test.cleanCursor()
+        assert db_manager_for_test.dropAllTables()
 
     def test_addUser(self):
-        gv.db_manager_for_test.cleanCursor()
+        db_manager_for_test.cleanCursor()
         users_added = []
         for user in user_data:
-            users_added.append(gv.db_manager_for_test.addUser(user[0], user[1]))
-        assert len(users_added) == 6
+            users_added.append(db_manager_for_test.addUser(user[0], user[1]))
+        assert len(users_added) == 7
 
     def test_getChatIds(self):
-        gv.db_manager_for_test.cleanCursor()
-        chat_ids = gv.db_manager_for_test.getAllChatIds()
+        db_manager_for_test.cleanCursor()
+        chat_ids = db_manager_for_test.getAllChatIds()
         users_chat_ids = list(map(lambda u: u[1], user_data))
         assert chat_ids == users_chat_ids
 
     def test_addProduct(self):
-        gv.db_manager_for_test.cleanCursor()
+        db_manager_for_test.cleanCursor()
         product_added = []
         for product in product_data:
-            product_added.append(gv.db_manager_for_test.addProduct(product[0], product[1], product[2]))
+            product_added.append(db_manager_for_test.addProduct(product[0], product[1], product[2]))
         assert len(product_added) == 3
 
     def test_addTransaction(self):
-        gv.db_manager_for_test.cleanCursor()
+        db_manager_for_test.cleanCursor()
         transaction_added = []
         for transaction in transaction_data:
-            transaction_added.append(gv.db_manager_for_test.addTransaction(transaction[0], transaction[1], transaction[2]))
+            transaction_added.append(db_manager_for_test.addTransaction(transaction[0], transaction[1], transaction[2]))
         assert len(transaction_added) == 10
 
     def test_getAllusers(self):
-        gv.db_manager_for_test.cleanCursor()
-        user_retrieved = gv.db_manager_for_test.getAllusers()
+        db_manager_for_test.cleanCursor()
+        user_retrieved = db_manager_for_test.getAllusers()
         assert len(user_retrieved) == len(user_retrieved)
 
     def test_getAllTransaction(self):
-        gv.db_manager_for_test.cleanCursor()
-        transaction_retrieved = gv.db_manager_for_test.getAllDebits()
+        db_manager_for_test.cleanCursor()
+        transaction_retrieved = db_manager_for_test.getAllDebits()
         assert len(transaction_retrieved) == len(transaction_data)
 
     def test_getAllProduct(self):
-        gv.db_manager_for_test.cleanCursor()
-        product_retrieved = gv.db_manager_for_test.getAllProduct()
+        db_manager_for_test.cleanCursor()
+        product_retrieved = db_manager_for_test.getAllProduct()
         assert len(product_retrieved) == len(product_data)
 
     def test_removeTransaction(self):
-        gv.db_manager_for_test.cleanCursor()
+        db_manager_for_test.cleanCursor()
         removed_transaction = []
         for tr in transaction_retrieved:
-            removed_transaction.append(gv.db_manager_for_test.removeTransaction(tr.id))
+            removed_transaction.append(db_manager_for_test.removeTransaction(tr.id))
         t: bool
         for t in removed_transaction:
             assert t
 
     def test_removeProduct(self):
-        gv.db_manager_for_test.cleanCursor()
+        db_manager_for_test.cleanCursor()
         removed_product = []
         for pr in product_retrieved:
-            removed_product.append(gv.db_manager_for_test.removeProduct(pr.id))
+            removed_product.append(db_manager_for_test.removeProduct(pr.id))
 
         p: bool
         for p in removed_product:
             assert p
 
     def test_removeUser(self):
-        gv.db_manager_for_test.cleanCursor()
+        db_manager_for_test.cleanCursor()
         removed_user = []
         for user in user_retrieved:
-            removed_user.append(gv.db_manager_for_test.removeUser(user.chat_id))
+            removed_user.append(db_manager_for_test.removeUser(user.chat_id))
 
         u: bool
         for u in removed_user:
             assert u
+
+    def test_dropAllTables_end(self):
+        print("Dropping data to clean DB")
+        db_manager_for_test.cleanCursor()
+        assert db_manager_for_test.dropAllTables()
