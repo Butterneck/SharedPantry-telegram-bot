@@ -5,6 +5,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 import os
 from MyThread import MyThread
+from Utils import terminalColors
 
 
 lock = emojize(":lock:", use_aliases=True)
@@ -186,10 +187,16 @@ def main():
     dp.add_handler(CallbackQueryHandler(button, pass_chat_data=True))
     dp.add_handler(CommandHandler('conto', conto))
 
-    updater.start_webhook(listen='0.0.0.0',
-                                            port=PORT,
-                                            url_path=TOKEN)
-    updater.bot.set_webhook("https://cianobot.herokuapp.com/" + TOKEN)
+
+    if "HEROKU" in os.environ:
+        print(terminalColors.WARNING + 'Starting Webhook' + terminalColors.ENDC)
+        updater.start_webhook(listen='0.0.0.0',
+                                                port=PORT,
+                                                url_path=TOKEN)
+        updater.bot.set_webhook("https://cianobot.herokuapp.com/" + TOKEN)
+    else:
+        print(terminalColors.WARNING + 'Starting Polling' + terminalColors.ENDC)
+        updater.start_polling()
     updater.idle()
 
 
