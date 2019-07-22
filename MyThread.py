@@ -15,4 +15,4 @@ class MyThread(Thread):
                 debitoMensile(self.bot)
                 gv.db_manager.deactivateActivator() # reset activator value
                 return
-            time.sleep(3000)
+            time.sleep(3)
