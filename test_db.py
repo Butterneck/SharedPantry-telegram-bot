@@ -119,14 +119,14 @@ class Test_db(object):
             assert u
 
     def test_activateActivator(self):
-        gv.db_manager.cleanCursor()
-        gv.db_manager_for_test.activateActivator()
-        assert gv.db_manager_for_test.checkActivator() == True
+        db_manager.cleanCursor()
+        db_manager_for_test.activateActivator()
+        assert db_manager_for_test.checkActivator() == True
 
     def test_deactivateActivator(self):
-        gv.db_manager_for_test.cleanCursor()
-        gv.db_manager_for_test.deactivateActivator()
-        assert gv.db_manager_for_test.checkActivator() == False
+        db_manager_for_test.cleanCursor()
+        db_manager_for_test.deactivateActivator()
+        assert db_manager_for_test.checkActivator() == False
 
     def test_dropAllTables_end(self):
         print("Dropping data to clean DB")
