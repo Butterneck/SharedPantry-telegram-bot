@@ -119,7 +119,7 @@ class Test_db(object):
             assert u
 
     def test_activateActivator(self):
-        db_manager.cleanCursor()
+        db_manager_for_test.cleanCursor()
         db_manager_for_test.activateActivator()
         assert db_manager_for_test.checkActivator() == True
 
