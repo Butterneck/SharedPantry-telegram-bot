@@ -105,9 +105,14 @@ def aggiornaProdottiButton(bot, update, user_data, chat_data):
 
 
 def aggiorna_quantita(bot, update, user_data):
-    if update.message.text == "del":
-        gv.db_manager.removeProduct(user_data['product_id'])
-        update.message.reply_text("Prodotto eliminato correttamente")
+    if update.message.text == "del" or update.message.text == "Del":
+        a = gv.db_manager.checkTransaction_forProducts(user_data['product_id'])
+        print(a)
+        if a:
+            gv.db_manager.removeProduct(user_data['product_id'])
+            update.message.reply_text("Prodotto eliminato correttamente")
+        else:
+            update.message.reply_text("Prodotto non eliminabile, ci sono delle transazioni collegate")
     else:
         products = gv.db_manager.getAllProduct()
         currentQt = list(filter(lambda product : product.id == int(user_data['product_id']), products))[0].quantity

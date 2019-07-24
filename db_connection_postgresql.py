@@ -318,5 +318,17 @@ class DB_Connection():
             deactivateActivator()
             return False
 
+    def checkTransaction_forProducts(self, product_id):
+        if self.existDB():
+            print(intro + self.path + "...checkTransaction_forProducts" + end)
+            self.db.execute('SELECT * FROM User_Prodotti WHERE Prodotto_Id = %s;', (product_id, ))
+
+            if len(self.db.fetchall()) != 0:
+                print(intro + self.path + "Prodotto non eliminabile, transazioni correlate" + end)
+                return False
+            else:
+                print(intro + self.path + "Prodotto eliminabile" + end)
+                return True
+
     def cleanCursor(self):
         self.connection.commit()
