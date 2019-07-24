@@ -23,14 +23,14 @@ def lista(bot, update):
         nome = str(product.quantity) + " - " + product.name + " : €" + str(product.price)
         row.append(InlineKeyboardButton(nome, callback_data=product.id))
 
-    keyboard.append(row)
-
-    keyboard.append([InlineKeyboardButton("Annulla", callback_data='annullaOrdine')])
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    update.message.reply_text("Questo e' quello che offre la taverna, scegli responsabilmente",
-                                                    reply_markup=reply_markup)
+    if len(row):
+        keyboard.append(row)
+        keyboard.append([InlineKeyboardButton("Annulla", callback_data='annullaOrdine')])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text("Questo e' quello che offre la taverna, scegli responsabilmente",
+                                                        reply_markup=reply_markup)
+    else:
+        update.message.reply_text("Al momento la taverna non ha nulla da offrirti, torna piu' tardi")
 
 
 def button(bot, update, chat_data):
