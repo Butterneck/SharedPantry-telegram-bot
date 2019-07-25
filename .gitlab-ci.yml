@@ -16,7 +16,7 @@ test:
     stage: test
     script:
     #Setting-up
-    - export DATABASE_URL=postgres://runner:test@postgres/nice_marmot
+    - export DATABASE_URL=postgres://$POSTGRES_USER:POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB
     - apt-get update -qy
     - apt-get install -y python-dev python-pip
     - pip install -r requirements.txt
