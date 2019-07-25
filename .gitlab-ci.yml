@@ -8,7 +8,6 @@ test:
     stage: test
     script:
     #Setting-up
-    - export DATABASE_URL=postgres://postgres:@postgres:5432/python-test-app
     - apt-get update -qy
     - apt-get install -y python-dev python-pip
     - pip install -r requirements.txt
