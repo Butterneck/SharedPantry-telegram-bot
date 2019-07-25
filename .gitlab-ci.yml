@@ -1,5 +1,13 @@
 image: python:latest
 
+services:
+    - postgres:latest
+
+variables:
+    POSTGRES_DB: nice_marmot
+    POSTGRES_USER: runner
+    POSTGRES_PASSWORD: "test"
+
 stages:
     - test
     - deploy
@@ -8,9 +16,22 @@ test:
     stage: test
     script:
     #Setting-up
-    - export DATABASE_URL=postgres://kztdqvcvabikuw:558e67b9ac1b55d22d94a8790b5bde3918d69e89e20f136cf89e25fdbc8d39e4@ec2-54-220-0-91.eu-west-1.compute.amazonaws.com:5432/d1q4vs74un4gp1
+    - export DATABASE_URL=postgres://runner:test@nice_marmot
     - apt-get update -qy
     - apt-get install -y python-dev python-pip
     - pip install -r requirements.txt
     #Run tests with
     - pytest
+
+deploy:
+    stage: deploy
+    script:
+        - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/cianobot.git
+        - git push heroku master
+        - echo "Deployed to Production Server https://t.me/cianostavernabot"
+    environment:
+        name: production
+        url: https://t.me/cianostavernabot
+    when: manual
+    only:
+        - master
