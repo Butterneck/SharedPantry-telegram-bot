@@ -8,6 +8,7 @@ test:
     stage: test
     script:
     #Setting-up
+    - export DATABASE_URL=postgres://postgres:@postgres:5432/python-test-app
     - apt-get update -qy
     - apt-get install -y python-dev python-pip
     - pip install -r requirements.txt
@@ -17,8 +18,8 @@ test:
 deploy:
     stage: deploy
     script:
-        - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/cianobot.git
-        - git push -f heroku master
+        - gem install dpl
+        - dpl --provider=heroku --app=cianobot --api-key=$HEROKU_API_KEY
         - echo "Deployed to Production Server https://t.me/cianostavernabot"
     environment:
         name: production
