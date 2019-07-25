@@ -1,4 +1,4 @@
-image: python:latest
+image: docker:latest
 
 stages:
     - test
@@ -9,7 +9,7 @@ test:
 
     services:
         - postgres:latest
-        - docker:latest
+        - docker:dind
 
     variables:
         POSTGRES_DB: nice_marmot
