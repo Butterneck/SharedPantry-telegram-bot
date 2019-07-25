@@ -1,21 +1,23 @@
 image: python:latest
 
-services:
-    - postgres:latest
-
-variables:
-    POSTGRES_DB: nice_marmot
-    POSTGRES_USER: runner
-    POSTGRES_PASSWORD: "test"
-
 stages:
     - test
     - deploy
 
 test:
     stage: test
+
+    services:
+        - postgres:latest
+
+    variables:
+        POSTGRES_DB: nice_marmot
+        POSTGRES_USER: runner
+        POSTGRES_PASSWORD: "test"
+
     script:
     #Setting-up
+    - docker run --name $POSTGRES_USER -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -d $POSTGRES_DB
     - export DATABASE_URL=postgres://$POSTGRES_USER:POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB
     - apt-get update -qy
     - apt-get install -y python-dev python-pip
