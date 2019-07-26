@@ -10,7 +10,7 @@ class MyThread(Thread):
         self.bot = bot
 
     def run(self):
-        while True:
+        for i in range(200):
             if gv.db_manager.checkActivator():  # Check the value of activator
                 debitoMensile(self.bot)
                 gv.db_manager.deactivateActivator() # reset activator value
