@@ -366,7 +366,7 @@ class DB_Connection():
         else:
             print(intro + self.path  + ' not found' + end)
             print(intro + self.path  + ' initializing backup' + end)
-            deactivateActivator()
+            deactivateBackup()
             return False
 
     def cleanCursor(self):

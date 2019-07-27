@@ -1,9 +1,9 @@
 from threading import Thread
 import globalVariables as gv
 import time
-from Utils import dbBackup dropboxUpload
+from Utils import dbBackup, dropboxUpload
 
-class CHeckBackupThread(Thread):
+class CheckBackupThread(Thread):
     def __init__(self):
         '''Constructor'''
         Thread.__init__(self)

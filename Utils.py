@@ -4,6 +4,7 @@ import globalVariables as gv
 import dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError
+import os
 
 class terminalColors:
     HEADER = '\033[95m'

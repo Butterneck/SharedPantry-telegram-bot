@@ -5,6 +5,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 import os
 from CheckActivatorThread import CheckActivatorThread
+from CheckBackupThread import CheckBackupThread
 from Utils import terminalColors
 
 
@@ -158,7 +159,7 @@ def main():
     checkActivator.start()
 
     # Inizializzo il thread per il check del backup
-    checkBackup = CHeckBackupThread()
+    checkBackup = CheckBackupThread()
     checkBackup.start()
 
     dp = updater.dispatcher
