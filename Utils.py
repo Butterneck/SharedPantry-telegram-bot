@@ -56,9 +56,12 @@ def dropboxUpload(LOCALFILE):
         try:
             dbx.files_upload(f.read(), BACKUPPATH, mode=WriteMode('overwrite'))
             print("Backup succeded!")
+            os.system('rm ' + LOCALFILE)
+            return
         except ApiError as err:
             if (err.error.is_path() and err.error.get_path().reason.is_insufficient_space()):
                 print("Spazio insufficiente, impossibile eseguire il backup")
+                os.system("rm " + LOCALFILE)
                 return
             elif err.user_message_text:
                 print(err.user_message_text)
