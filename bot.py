@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, Conversa
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 import os
-from MyThread import MyThread
+from CheckActivatorThread import CheckActivatorThread
 from Utils import terminalColors
 
 
@@ -154,7 +154,7 @@ def main():
     bot = telegram.Bot(TOKEN)
 
     # Inizializzo il thread per il check del contomensile
-    checkActivator = MyThread(bot)
+    checkActivator = CheckActivatorThread(bot)
     checkActivator.start()
 
 

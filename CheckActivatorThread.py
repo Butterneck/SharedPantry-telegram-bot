@@ -3,7 +3,7 @@ import globalVariables as gv
 from contabilita import debitoMensile
 import time
 
-class MyThread(Thread):
+class CheckActivatorThread(Thread):
     def __init__(self, bot):
         '''Constructor'''
         Thread.__init__(self)
