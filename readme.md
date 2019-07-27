@@ -73,7 +73,6 @@ Features:
 ## Authors
 
 - [**Butterneck**](https://gitlab.com/Butterneck)
-
 - [**jjocram**](https://gitlab.com/jjocram)
 
 ## License
