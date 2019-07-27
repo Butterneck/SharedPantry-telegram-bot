@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS Users, Prodotti, User_Prodotti, Debits, Activator;
+DROP TABLE IF EXISTS Users, Prodotti, User_Prodotti, Debits, Activator, Backup;
 
 CREATE TABLE Users(
     Id SERIAL PRIMARY KEY,
@@ -34,4 +34,9 @@ CREATE TABLE Debits(
 CREATE TABLE Activator(
     Id SERIAL PRIMARY KEY,
     Activator INT NOT NULL
+);
+
+CREATE TABLE Backup(
+    Id SERIAL PRIMARY KEY,
+    Backup INT NOT NULL
 );

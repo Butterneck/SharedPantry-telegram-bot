@@ -12,6 +12,7 @@ from User_Prodotti import *
 from Prodotti import *
 from Debiti import Debit
 from Activator import Activator
+from Backup import Backup
 
 #DB_URL = "postgres://eyicwwxwnxuxou:675f943b8955a12022eab26b184c193d3c1219c4999688d899cfb3687f33e1b4@ec2-54-217-234-157.eu-west-1.compute.amazonaws.com:5432/df8fia9ccanh45"
 init_db = open("dispensa.sql").read()
@@ -38,7 +39,7 @@ class DB_Connection():
             print(terminalColors.OKGREEN + "[Database]:" + self.path + " reachable")
 
         self.db = self.connection.cursor()
-        self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator');")
+        self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
         if self.db.fetchone()[0]:
             print(intro + self.path  + self.path  + ' already exists' + end)
         else:
@@ -53,7 +54,7 @@ class DB_Connection():
             print(intro + self.path  + ' closed' + end)
 
     def existDB(self):
-        self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator');")
+        self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
         return self.db.fetchone()[0]
 
     def startDB(self):
@@ -329,6 +330,44 @@ class DB_Connection():
             else:
                 print(intro + self.path + "Prodotto eliminabile" + end)
                 return True
+
+    def activateBackup(self):
+        if self.existDB():
+            print(intro + self.path + '...activateBackup' + end)
+            self.db.execute('UPDATE Backup SET Backup = 1')
+            self.connection.commit()
+        else:
+            print(intro + self.path + 'not found' + end)
+
+    def deactivateBackup(self):
+        if self.existDB():
+            print(intro + self.path + '...deactivateBackup' + end)
+            self.db.execute('UPDATE Backup SET Backup = 0')
+            self.connection.commit()
+        else:
+            print(intro + self.path + 'not found' + end)
+
+    def checkBackup(self):
+        if self.existDB():
+            print(intro + self.path + '...checkBackup' + end)
+            self.db.execute('SELECT * FROM Backup')
+            if len(self.db.fetchall()) == 0:
+                print(intro + self.path + '...createBackupRow' + end)
+                self.db.execute('INSERT INTO Backup(backup) VALUES(1)')
+                self.connection.commit()
+
+            self.db.execute('SELECT Backup FROM Backup')
+            if self.db.fetchone()[0]:
+                print(intro + self.path  + ' backup activated' + end)
+                print('Done')
+                return True
+            print('Done')
+            return False
+        else:
+            print(intro + self.path  + ' not found' + end)
+            print(intro + self.path  + ' initializing backup' + end)
+            deactivateActivator()
+            return False
 
     def cleanCursor(self):
         self.connection.commit()
