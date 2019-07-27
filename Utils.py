@@ -5,7 +5,7 @@ import dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError
 import os
-import time
+import datetime
 
 class terminalColors:
     HEADER = '\033[95m'
