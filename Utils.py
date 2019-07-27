@@ -68,15 +68,19 @@ def dropboxUpload(LOCALFILE):
                 return
 
 def dbBackup():
-    user = gv.DB_URL[11:25]
-    password = gv.DB_URL[26:90]
-    host = gv.DB_URL[91:138]
-    port = gv.DB_URL[139:143]
-    db = gv.DB_URL[144:]
+    url = gv.DB_URL
+    list = url.split('/')[2:]
+    user = list[0].split(':')[0]
+    port = list[0].split(':')[2]
+    host = list[0].split('@')[1].split(':')[0]
+    password = list[0].split(':')[1].split('@')[0]
+    db = list[1]
+    print(user + port + host + password, sep="\t")
+
 
     os.environ["PGPASSWORD"] = password
 
     with gzip.open('backup.gz', 'wb') as f:
         pg_dump('-h', host, '-U', user, db, '-p', port, _out=f)
 
-    dropboxUpload(str(f))
+    dropboxUpload('backup.gz')
