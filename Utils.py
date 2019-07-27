@@ -1,3 +1,10 @@
+import gzip
+from sh import pg_dump
+import globalVariables as gv
+import dropbox
+from dropbox.files import WriteMode
+from dropbox.exceptions import ApiError
+
 class terminalColors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -32,3 +39,43 @@ def getNumAcquisti(toCheck, acquisti):
             counter += 1
 
     return counter
+
+def dropboxUpload(LOCALFILE):
+    BACKUPPATH = '/backup.gz'
+    dbx = dropbox.Dropbox(os.environ["DROPBOX_API_KEY"])
+
+    try:
+        dbx.users_get_current_account()
+    except AuthError:
+        print("ERROR: Invalid access TOKEN")
+        return
+
+    with open(LOCALFILE, 'rb') as f:
+        print("Uploading " + LOCALFILE + " to Dropbox as " + BACKUPPATH + "...")
+        try:
+            dbx.files_upload(f.read(), BACKUPPATH, mode=WriteMode('overwrite'))
+            print("Backup succeded!")
+        except ApiError as err:
+            if (err.error.is_path() and err.error.get_path().reason.is_insufficient_space()):
+                print("Spazio insufficiente, impossibile eseguire il backup")
+                return
+            elif err.user_message_text:
+                print(err.user_message_text)
+                return
+            else:
+                print(err)
+                return
+
+def dbBackup():
+    user = gv.DB_URL[11:25]
+    password = gv.DB_URL[26:90]
+    host = gv.DB_URL[91:138]
+    port = gv.DB_URL[139:143]
+    db = gv.DB_URL[144:]
+
+    os.environ["PGPASSWORD"] = password
+
+    with gzip.open('backup.gz', 'wb') as f:
+        pg_dump('-h', host, '-U', user, db, '-p', port, _out=f)
+
+    dropboxUpload(str(f))
