@@ -54,6 +54,8 @@ Both the bot and the database are hosted on Heroku. The deployment is manually t
 - Edit messagges in order to make the conversation experience even fancier
 - General code refactoring
 
+## Versioning
+
 ### Version 1.0 - Available now!
 
 The first version of this awesome bot is finally here.
