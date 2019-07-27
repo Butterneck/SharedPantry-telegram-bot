@@ -157,6 +157,9 @@ def main():
     checkActivator = CheckActivatorThread(bot)
     checkActivator.start()
 
+    # Inizializzo il thread per il check del backup
+    checkBackup = CHeckBackupThread()
+    checkBackup.start()
 
     dp = updater.dispatcher
 
