@@ -1,7 +1,7 @@
 from threading import Thread
 import globalVariables as gv
 import time
-from Utils import dbBackup, dropboxUpload
+from Utils import dbBackup, dropboxUpload, removeOldBackups
 
 class CheckBackupThread(Thread):
     def __init__(self):

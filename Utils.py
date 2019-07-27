@@ -42,6 +42,16 @@ def getNumAcquisti(toCheck, acquisti):
 
     return counter
 
+def removeOldBackups(dbx):
+    try:
+        current_year = datetime.date.today().year
+        dbx.files_delete('/backup' + datetime.date.today().replace(year=current_year-1) + '.gz')
+        print('Removed old backup')
+        return
+    except:
+        print('No backup older than a year')
+        return
+
 def dropboxUpload(LOCALFILE):
     BACKUPPATH = '/backup' + str(datetime.date.today()) + '.gz'
     dbx = dropbox.Dropbox(os.environ["DROPBOX_API_KEY"])
@@ -51,6 +61,8 @@ def dropboxUpload(LOCALFILE):
     except AuthError:
         print("ERROR: Invalid access TOKEN")
         return
+
+    removeOldBackups(dbx)
 
     with open(LOCALFILE, 'rb') as f:
         print("Uploading " + LOCALFILE + " to Dropbox as " + BACKUPPATH + "...")
