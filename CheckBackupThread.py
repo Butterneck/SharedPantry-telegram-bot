@@ -9,7 +9,7 @@ class CheckBackupThread(Thread):
         Thread.__init__(self)
 
     def run(self):
-        for i in range(200):
+        while True:
             if gv.db_manager.checkBackup():
                 dbBackup()
                 gv.db_manager.deactivateBackup()
