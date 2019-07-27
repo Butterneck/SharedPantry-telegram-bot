@@ -64,13 +64,10 @@ Features:
 - Items shop with price and quantity ~ /prendi
 - Always check your bill ~ /conto
 - Manage pantry ~ /gestisci
-
   - Add new items
   - Edit items quantity
   - Remove items
-
 - On the last day of the month pantry owner receives a message with every user's bill and every user get his bill
-
 - Daily backup
 
 ## Authors
