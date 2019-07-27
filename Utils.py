@@ -5,6 +5,7 @@ import dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError
 import os
+import time
 
 class terminalColors:
     HEADER = '\033[95m'
@@ -42,7 +43,7 @@ def getNumAcquisti(toCheck, acquisti):
     return counter
 
 def dropboxUpload(LOCALFILE):
-    BACKUPPATH = '/backup.gz'
+    BACKUPPATH = '/backup' + str(datetime.date.today()) + '.gz'
     dbx = dropbox.Dropbox(os.environ["DROPBOX_API_KEY"])
 
     try:
