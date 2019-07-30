@@ -1,6 +1,5 @@
 import gzip
 import sh #import pg_dump
-import globalVariables as gv
 import dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError
@@ -16,6 +15,8 @@ class terminalColors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+
+import globalVariables as gv
 
 def nameFromPath(path):
     reversedPath = path[::-1]
