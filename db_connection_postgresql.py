@@ -22,9 +22,6 @@ end = terminalColors.ENDC
 
 
 class DB_Connection():
-    # Da modificare quando verrà portato su heroku
-    # DB_URL = os.environ['DATABASE_URL']
-
 
     def __init__(self, DB_URL):
         self.path = DB_URL
@@ -67,7 +64,7 @@ class DB_Connection():
 
     def addUser(self, username, chat_id):
         if self.existDB():
-            print(intro + self.path  + '...Aggiunta untente' + end)
+            print(intro + self.path  + '...Aggiunta utente' + end)
             self.db.execute('INSERT INTO Users(Username, Chat_Id) VALUES(%s, %s) RETURNING Id;', (username, chat_id))
             self.connection.commit()
             return User(self.db.fetchone()[0], username, chat_id)
