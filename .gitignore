@@ -1,6 +1,6 @@
 #Annoying things
 .DS_Store
-
+.manage_history
 #Ide things
 .idea/
 
