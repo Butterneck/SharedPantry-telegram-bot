@@ -1,5 +1,5 @@
 import gzip
-from sh import pg_dump
+import sh #import pg_dump
 import globalVariables as gv
 import dropbox
 from dropbox.files import WriteMode
@@ -97,6 +97,6 @@ def dbBackup():
     os.environ["PGPASSWORD"] = password
 
     with gzip.open('backup.gz', 'wb') as f:
-        pg_dump('-h', host, '-U', user, db, '-p', port, _out=f)
+        sh.pg_dump('-h', host, '-U', user, db, '-p', port, _out=f)
 
     dropboxUpload('backup.gz')
