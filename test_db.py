@@ -88,6 +88,23 @@ class Test_db(object):
         product_retrieved = db_manager_for_test.getAllProduct()
         assert len(product_retrieved) == len(product_data)
 
+    def test_getUsername_fromChatId(self):
+        userNames = []
+        for user in user_data:
+            userNames.append(db_manager_for_test.getUsername_fromChatId(user[1]))
+        assert userNames == list(map(lambda u: u[0], user_data))
+
+
+    def test_getAllAcquisti(self):
+        test = True
+        for user in user_data:
+            acqusti_for_user_getted = db_manager_for_test.getAllAcquisti(user[1])
+            print("getted",len(acqusti_for_user_getted))
+            acqusti_for_user = list(filter(lambda a: a[0] == user[1], transaction_data))
+            print("base", len(acqusti_for_user))
+            test = test and (len(acqusti_for_user) == len(acqusti_for_user_getted))
+        assert test
+
     def test_removeTransaction(self):
         db_manager_for_test.cleanCursor()
         removed_transaction = []
@@ -106,7 +123,6 @@ class Test_db(object):
         p: bool
         for p in removed_product:
             assert p
-
 
     def test_removeUser(self):
         db_manager_for_test.cleanCursor()

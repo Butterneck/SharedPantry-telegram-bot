@@ -113,7 +113,7 @@ class DB_Connection():
                 self.connection.commit()
                 #return Product(product_id, )
             else:
-                print(terminalColors.FAIL + '[Error]-[Database]: '+ self.path +' not found' + end)
+                print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path +' not found' + end)
                 return None
 
     def addTransaction(self, chat_id, product_id, qt):
@@ -316,7 +316,7 @@ class DB_Connection():
         else:
             print(intro + self.path  + ' not found' + end)
             print(intro + self.path  + ' initializing activator' + end)
-            deactivateActivator()
+            self.deactivateActivator()
             return False
 
     def checkTransaction_forProducts(self, product_id):
@@ -366,7 +366,7 @@ class DB_Connection():
         else:
             print(intro + self.path  + ' not found' + end)
             print(intro + self.path  + ' initializing backup' + end)
-            deactivateBackup()
+            self.deactivateBackup()
             return False
 
     def cleanCursor(self):
