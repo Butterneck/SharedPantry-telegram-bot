@@ -138,10 +138,16 @@ def auth(bot, update, user_data):
     if (update.message.text == "Bordello") :
         update.message.reply_text("taverna sbloccata " + unlock + "Benvenuto, usa il comando /prendi per selezionare cosa hai preso dalla dispensa" + yum)
         user = update.message.from_user
-        if (user.first_name and user.last_name):
+        if user.first_name and user.last_name:
             u = gv.db_manager.addUser(user.first_name + " " + user.last_name, update.message.chat_id)
-        else:
+        elif user.first_name:
+            u = gv.db_manager.addUser(user.first_name + " senza congome" , update.message.chat_id)
+        elif user.last_name:
+            u = gv.db_manager.addUser("senza nome" + " " + user.last_name, update.message.chat_id)
+        elif user.username:
             u = gv.db_manager.addUser(user.username, update.message.chat_id)
+        else:
+            u = gv.db_manager.addUser("Sconosciuto", update.message.chat_id)
         return ConversationHandler.END
     else:
         update.message.reply_text("Password errata" + divieto + " digita /start per riprovare")
