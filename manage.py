@@ -317,7 +317,7 @@ def main():
     heroku_prject_name = session.prompt("Heroku project name: ", is_password=False)
     heroku_project_index = int(session.prompt("Heroku project index (in dashboard) (index starts from 0): "))
 
-    path_to_geckodriver = "/Users/marco/Downloads/geckodrive"
+    path_to_geckodriver = "/Users/marco/Downloads/geckodriver"
 
     try:
         pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver,
