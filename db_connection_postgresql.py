@@ -368,3 +368,18 @@ class DB_Connection():
 
     def cleanCursor(self):
         self.connection.commit()
+
+
+    def runSqlQuery(self, query):
+        if self.existDB():
+            print(terminalColors.WARNING + "Eseguendo query arbitraria:")
+            print(str(query) + terminalColors.ENDC)
+            self.db.execute(query)
+            self.connection.commit()
+            try:
+                return self.db.fetchall()
+            except:
+                return True
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path + ' not found' + end)
+            return None

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from __future__ import unicode_literals
-from prompt_toolkit import PromptSession
+from prompt_toolkit import PromptSession, prompt
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
@@ -28,7 +28,8 @@ command_completer = WordCompleter(['help',
                                    'modify_quantity',
                                    'drop_all_tables',
                                    'trigger_backup',
-                                   'trigger_send_conto'], ignore_case=True)
+                                   'trigger_send_conto',
+                                   'run_query'], ignore_case=True)
 
 from prompt_toolkit.validation import Validator
 
@@ -303,6 +304,15 @@ def trigger_send_conto(db_manager, args=[]):
         r = http.request('GET', url_trigger_send_conto)
         print(r.status)
 
+
+def run_query(db_manager, args=[]):
+    if len(args) == 0:
+        query = prompt("sql: ")
+        result = db_manager.runSqlQuery(query)
+        if result:
+            print(result)
+
+
 def handle_cmd(cmd, db_manager):
     args = cmd.split(' ')
     cmd = args.pop(0)
@@ -334,6 +344,8 @@ def handle_cmd(cmd, db_manager):
         trigger_backup(db_manager, args)
     elif cmd == 'trigger_send_conto':
         trigger_send_conto(db_manager, args)
+    elif cmd == 'run_query':
+        run_query(db_manager, args)
 
 
 def main():
