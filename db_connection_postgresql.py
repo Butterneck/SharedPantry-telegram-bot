@@ -54,12 +54,14 @@ class DB_Connection():
             print(intro + self.path  + ' closed' + end)
 
     def existDB(self):
+        self.cleanCursor()
         self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
         return self.db.fetchone()[0]
 
     def startDB(self):
         if self.existDB() == False:
             print(intro + self.path  + ' initialization' + end)
+            self.cleanCursor()
             self.db.execute(init_db)
             self.connection.commit()
         else:
@@ -68,6 +70,7 @@ class DB_Connection():
     def addUser(self, username, chat_id):
         if self.existDB():
             print(intro + self.path  + '...Aggiunta untente' + end)
+            self.cleanCursor()
             self.db.execute('INSERT INTO Users(Username, Chat_Id) VALUES(%s, %s) RETURNING Id;', (username, chat_id))
             self.connection.commit()
             return User(self.db.fetchone()[0], username, chat_id)
@@ -79,6 +82,7 @@ class DB_Connection():
         if self.existDB():
             print(intro + self.path  + '...Rimuozione utente' + end)
             uid = str(self.getuserId_fromChatId(chat_id))
+            self.cleanCursor()
             self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (uid, ))
             self.connection.commit()
             return True
@@ -89,6 +93,7 @@ class DB_Connection():
     def addProduct(self, name, price, qt):
         if self.existDB():
             print(intro + self.path  + '...Aggiunta prodotto' + end)
+            self.cleanCursor()
             self.db.execute('INSERT INTO Prodotti(Name, Price, Quantity) VALUES(%s, %s, %s) RETURNING Id;', (name, price, qt))
             self.connection.commit()
             return Product(self.db.fetchone()[0], name, price, qt)
@@ -99,6 +104,7 @@ class DB_Connection():
     def removeProduct(self, product_id):
         if self.existDB():
             print(intro + self.path  + '...Rimuovi prodotto' + end)
+            self.cleanCursor()
             self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (product_id, ))
             self.connection.commit()
             return True
@@ -109,6 +115,7 @@ class DB_Connection():
     def modifyQuantity(self, product_id, qt):
             if self.existDB():
                 print(intro + self.path  + '...Modifica quantità' + end)
+                self.cleanCursor()
                 self.db.execute('UPDATE Prodotti SET Quantity = %s WHERE Id = %s;', (qt, product_id))
                 self.connection.commit()
                 #return Product(product_id, )
@@ -121,6 +128,7 @@ class DB_Connection():
             d = datetime.date.today()
             uid = self.getuserId_fromChatId(chat_id)
             print(intro + self.path  + '...Aggiunta transazione' + end)
+            self.cleanCursor()
             self.db.execute('SELECT Quantity FROM Prodotti WHERE Id = %s', (product_id, ))
             lastQuantity = int(self.db.fetchone()[0]);
 
@@ -130,6 +138,7 @@ class DB_Connection():
 
             if lastQuantity-qt >= 0:
                 #Ci sono ancora, aggiorno semplicemente
+                self.cleanCursor()
                 self.db.execute('INSERT INTO User_Prodotti(User_Id, Prodotto_Id, Data, Quantity) VALUES(%s, %s, %s, %s);', (uid, product_id, d, qt))
                 self.connection.commit()
                 self.modifyQuantity(product_id, lastQuantity-qt)
@@ -144,6 +153,7 @@ class DB_Connection():
     def removeTransaction(self, transaction_id):
         if self.existDB():
             print(intro + self.path  + '...Rimozione transazione' + end)
+            self.cleanCursor()
             self.db.execute('DELETE FROM User_Prodotti WHERE Id = %s;', (transaction_id, ))
             self.connection.commit()
             return True
@@ -154,6 +164,7 @@ class DB_Connection():
     def getUserId(self, username):
         if self.existDB():
             print(intro + self.path  + '...getUserId' + end)
+            self.cleanCursor()
             self.db.execute('SELECT Id FROM Users WHERE Username = %s', (username, ))
             return int(self.db.fetchone()[0])
         else:
@@ -163,6 +174,7 @@ class DB_Connection():
     def getuserId_fromChatId(self, chat_id):
         if self.existDB():
             print(intro + self.path  + '...getUserId_fromChatId' + end)
+            self.cleanCursor()
             self.db.execute('SELECT Id FROM Users WHERE Chat_Id = %s', (chat_id, ))
             query = self.db.fetchone()
             if query is not None:
@@ -176,6 +188,7 @@ class DB_Connection():
     def getUsername_fromChatId(self, chat_id):
         if self.existDB():
             print(intro + self.path  + '...getUsername_fromChatId' + end)
+            self.cleanCursor()
             self.db.execute('SELECT Username FROM Users WHERE Chat_Id = %s', (chat_id, ))
             query = self.db.fetchone()
             if query is not None:
@@ -191,6 +204,7 @@ class DB_Connection():
         if self.existDB():
             prodotti = []
             print(intro + self.path  + '...getAllProduct' + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM Prodotti')
             query = self.db.fetchall()
             for el in query:
@@ -204,6 +218,7 @@ class DB_Connection():
         if self.existDB():
             chat_ids = []
             print(intro + self.path  + '...getAllChatIds' + end)
+            self.cleanCursor()
             self.db.execute('SELECT Chat_Id FROM Users')
             query = self.db.fetchall()
             for el in query:
@@ -218,6 +233,7 @@ class DB_Connection():
             acquisti = []
             uid = self.getuserId_fromChatId(chat_id)
             print(intro + self.path  + '...getAllAcquisti' + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM User_Prodotti WHERE User_Id = %s', (uid, ))
             query = self.db.fetchall()
             for el in query:
@@ -232,6 +248,7 @@ class DB_Connection():
             acquisti = []
             uid = self.getuserId_fromChatId(chat_id)
             print(intro + self.path  + '...getAcquistiIn' + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM User_Prodotti WHERE User_Id = %s AND Data >= %s AND Data <= %s', (uid, data_inizio, data_fine))
             query = self.db.fetchall()
             for el in query:
@@ -245,6 +262,7 @@ class DB_Connection():
         if self.existDB():
             acquisti = []
             print(intro + self.path  + '...getAllAcquisti' + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM User_Prodotti')
             query = self.db.fetchall()
             for el in query:
@@ -258,6 +276,7 @@ class DB_Connection():
         if self.existDB():
             utenti = []
             print(intro + self.path  + '...getAcquistiIn' + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM Users')
             query = self.db.fetchall()
             for el in query:
@@ -270,6 +289,7 @@ class DB_Connection():
     def dropAllTables(self):
         if self.existDB():
             print(terminalColors.WARNING + '[Database]: ' + self.path + '... Dropping tables' + end)
+            self.cleanCursor()
             self.db.execute('DROP TABLE IF EXISTS users, prodotti, user_prodotti, debits, activator;')
             self.connection.commit()
             self.db.execute(init_db)
@@ -283,6 +303,7 @@ class DB_Connection():
     def activateActivator(self):
         if self.existDB():
             print(intro + self.path + '...activateActivator' + end)
+            self.cleanCursor()
             self.db.execute('UPDATE Activator SET Activator = 1')
             self.connection.commit()
         else:
@@ -291,6 +312,7 @@ class DB_Connection():
     def deactivateActivator(self):
         if self.existDB():
             print(intro + self.path  + '...deactivateActivator' + end)
+            self.cleanCursor()
             self.db.execute('UPDATE Activator SET Activator = 0')
             self.connection.commit()
         else:
@@ -300,6 +322,7 @@ class DB_Connection():
         if self.existDB():
             print(intro + self.path  + '...checkActivator' + end)
 
+            self.cleanCursor()
             self.db.execute('SELECT * FROM Activator')
             if len(self.db.fetchall()) == 0:
                 print(intro + self.path + '...createActivatorRow' + end)
@@ -322,6 +345,7 @@ class DB_Connection():
     def checkTransaction_forProducts(self, product_id):
         if self.existDB():
             print(intro + self.path + "...checkTransaction_forProducts" + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM User_Prodotti WHERE Prodotto_Id = %s;', (product_id, ))
 
             if len(self.db.fetchall()) != 0:
@@ -334,6 +358,7 @@ class DB_Connection():
     def activateBackup(self):
         if self.existDB():
             print(intro + self.path + '...activateBackup' + end)
+            self.cleanCursor()
             self.db.execute('UPDATE Backup SET Backup = 1')
             self.connection.commit()
         else:
@@ -342,6 +367,7 @@ class DB_Connection():
     def deactivateBackup(self):
         if self.existDB():
             print(intro + self.path + '...deactivateBackup' + end)
+            self.cleanCursor()
             self.db.execute('UPDATE Backup SET Backup = 0')
             self.connection.commit()
         else:
@@ -350,6 +376,7 @@ class DB_Connection():
     def checkBackup(self):
         if self.existDB():
             print(intro + self.path + '...checkBackup' + end)
+            self.cleanCursor()
             self.db.execute('SELECT * FROM Backup')
             if len(self.db.fetchall()) == 0:
                 print(intro + self.path + '...createBackupRow' + end)
@@ -370,4 +397,4 @@ class DB_Connection():
             return False
 
     def cleanCursor(self):
-        self.connection.commit()
+        self.connection.rollback()
