@@ -13,6 +13,7 @@ importlib-metadata==0.18
 more-itertools==7.1.0
 packaging==19.0
 pluggy==0.12.0
+prompt-toolkit==2.0.9
 psycopg2-binary==2.8.3
 py==1.8.0
 pycparser==2.19
@@ -20,8 +21,10 @@ pyparsing==2.4.0
 pytest==5.0.1
 python-telegram-bot==11.1.0
 requests==2.22.0
+selenium==3.141.0
 sh==1.12.14
 six==1.12.0
+tqdm==4.32.2
 urllib3==1.25.3
 wcwidth==0.1.7
 zipp==0.5.2
