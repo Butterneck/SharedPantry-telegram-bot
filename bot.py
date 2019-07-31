@@ -139,7 +139,7 @@ def auth(bot, update, user_data):
         update.message.reply_text("taverna sbloccata " + unlock + "Benvenuto, usa il comando /prendi per selezionare cosa hai preso dalla dispensa" + yum)
         user = update.message.from_user
         if (user.first_name):
-            u = gv.db_manager.addUser(user.first_name, update.message.chat_id)
+            u = gv.db_manager.addUser(user.first_name + " " + user.last_name, update.message.chat_id)
         else:
             u = gv.db_manager.addUser(user.username, update.message.chat_id)
         return ConversationHandler.END
