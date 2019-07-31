@@ -8,6 +8,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit import print_formatted_text, HTML
 from prompt_toolkit.shortcuts import input_dialog, radiolist_dialog, yes_no_dialog
 from sys import exit
+import urllib3
 
 import Utils
 import datetime
@@ -25,7 +26,9 @@ command_completer = WordCompleter(['help',
                                    'remove_user',
                                    'remove_transaction',
                                    'modify_quantity',
-                                   'drop_all_tables'], ignore_case=True)
+                                   'drop_all_tables',
+                                   'trigger_backup',
+                                   'trigger_send_conto'], ignore_case=True)
 
 from prompt_toolkit.validation import Validator
 
@@ -284,31 +287,53 @@ def drop_all_tables(db_manager, args=[]):
     if result:
         db_manager.dropAllTables()
 
+
+def trigger_backup(db_manager, args=[]):
+    url_trigger_backup = "https://backuptrigger.herokuapp.com/"
+    http = urllib3.PoolManager()
+    r = http.request('GET', url_trigger_backup)
+    print(r.status)
+
+
+def trigger_send_conto(db_manager, args=[]):
+    if args[0] == '-r':
+        print("Sending request to Heroku...")
+        url_trigger_send_conto = "https://cianobotactivator.herokuapp.com/"
+        http = urllib3.PoolManager()
+        r = http.request('GET', url_trigger_send_conto)
+        print(r.status)
+
 def handle_cmd(cmd, db_manager):
+    args = cmd.split(' ')
+    cmd = args.pop(0)
     if cmd == 'help':
         print("--HELP--")
     elif cmd == 'list_products':
-        list_products(db_manager, [])
+        list_products(db_manager, args)
     elif cmd == 'list_users':
-        list_users(db_manager, [])
+        list_users(db_manager, args)
     elif cmd == 'list_transactions':
-        list_transactions(db_manager, [])
+        list_transactions(db_manager, args)
     elif cmd == 'insert_new_user':
-        insert_new_user(db_manager, [])
+        insert_new_user(db_manager, args)
     elif cmd == 'insert_new_product':
-        insert_new_product(db_manager, [])
+        insert_new_product(db_manager, args)
     elif cmd == 'insert_new_transaction':
-        insert_new_transaction(db_manager, [])
+        insert_new_transaction(db_manager, args)
     elif cmd == 'remove_product':
-        remove_product(db_manager, [])
+        remove_product(db_manager, args)
     elif cmd == 'remove_user':
-        remove_user(db_manager, [])
+        remove_user(db_manager, args)
     elif cmd == 'remove_transaction':
-        remove_transaction(db_manager, [])
+        remove_transaction(db_manager, args)
     elif cmd == 'modify_quantity':
-        modify_quantity(db_manager, [])
+        modify_quantity(db_manager, args)
     elif cmd == 'drop_all_tables':
-        drop_all_tables(db_manager, [])
+        drop_all_tables(db_manager, args)
+    elif cmd == 'trigger_backup':
+        trigger_backup(db_manager, args)
+    elif cmd == 'trigger_send_conto':
+        trigger_send_conto(db_manager, args)
 
 
 def main():
@@ -331,8 +356,8 @@ def main():
     path_to_geckodriver = "/Users/marco/Downloads/geckodriver"
 
     try:
-        pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver,
-                                        heroku_project_index)
+        pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver, heroku_project_index)
+        #pg_url = "postgres://fyoqpbctzdznrr:7ea4944c845d3ccc13f21022dff78137d352da194781112fd101d9830e7998ee@ec2-54-75-224-168.eu-west-1.compute.amazonaws.com:5432/d2ig29ct3113ik"
     except:
         print(terminalColors.FAIL + "Impossibile trovare l'url al DB postgres su Heroku" + terminalColors.ENDC)
         print(terminalColors.WARNING + "[-]Controllare la variabile 'path_to_geckodriver' in manage.py")

@@ -2,7 +2,7 @@ import gzip
 import sh #import pg_dump
 import dropbox
 from dropbox.files import WriteMode
-from dropbox.exceptions import ApiError
+from dropbox.exceptions import ApiError, AuthError
 import os
 import datetime
 
