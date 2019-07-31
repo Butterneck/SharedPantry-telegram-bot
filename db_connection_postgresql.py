@@ -108,7 +108,7 @@ class DB_Connection():
                 print(intro + self.path  + '...Modifica quantità' + end)
                 self.db.execute('UPDATE Prodotti SET Quantity = %s WHERE Id = %s;', (qt, product_id))
                 self.connection.commit()
-                #return Product(product_id, )
+                return True
             else:
                 print(terminalColors.FAIL + '[Error]-[Database]: ' + self.path +' not found' + end)
                 return None
