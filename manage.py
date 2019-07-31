@@ -24,7 +24,8 @@ command_completer = WordCompleter(['help',
                                    'remove_product',
                                    'remove_user',
                                    'remove_transaction',
-                                   'modify_quantity'], ignore_case=True)
+                                   'modify_quantity',
+                                   'drop_all_tables'], ignore_case=True)
 
 from prompt_toolkit.validation import Validator
 
@@ -275,6 +276,14 @@ def modify_quantity(db_manager, args=[]):
         print("Modifica non avvenuta, errore")
 
 
+def drop_all_tables(db_manager, args=[]):
+    result = yes_no_dialog(
+        title="Dropping all tables",
+        text="All data will be lost.\nYou are working on " + db_manager.path + "\n Are you sure?"
+    )
+    if result:
+        db_manager.dropAllTables()
+
 def handle_cmd(cmd, db_manager):
     if cmd == 'help':
         print("--HELP--")
@@ -298,6 +307,8 @@ def handle_cmd(cmd, db_manager):
         remove_transaction(db_manager, [])
     elif cmd == 'modify_quantity':
         modify_quantity(db_manager, [])
+    elif cmd == 'drop_all_tables':
+        drop_all_tables(db_manager, [])
 
 
 def main():
