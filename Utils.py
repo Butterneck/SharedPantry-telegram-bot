@@ -18,6 +18,9 @@ class terminalColors:
 
 import globalVariables as gv
 
+def datetime_to_integer(dt_time):
+    return int(10000*dt_time.year + 100*dt_time.month + dt_time.day) #copiata da stackoverflow
+
 def nameFromPath(path):
     reversedPath = path[::-1]
     name = ""
