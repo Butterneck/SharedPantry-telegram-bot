@@ -1,3 +1,6 @@
+#cached postgres url in manage
+.postgres_url_cached
+
 #Annoying things
 .DS_Store
 .manage_history
