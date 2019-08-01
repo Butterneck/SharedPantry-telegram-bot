@@ -7,8 +7,9 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit import print_formatted_text, HTML
 from prompt_toolkit.shortcuts import input_dialog, radiolist_dialog, yes_no_dialog
-from sys import exit
+from sys import exit, argv
 import urllib3
+from os import environ, path
 
 import Utils
 import datetime
@@ -36,6 +37,44 @@ from prompt_toolkit.validation import Validator
 
 def is_number(text):
     return text.isdigit()
+
+
+def get_pg_url(session):
+    heroku_mail = session.prompt("Heroku email: ")
+    heroku_password = session.prompt("Heroku password: ", is_password=True)
+    heroku_prject_name = session.prompt("Heroku project name: ", is_password=False)
+    heroku_project_index = int(session.prompt("Heroku project index (in dashboard) (index starts from 0): "))
+
+    path_to_geckodriver = "/Users/marco/Downloads/geckodriver"
+
+    try:
+        pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver,
+                                        heroku_project_index)
+        url_file = open(".postgres_url_cached", "w+")
+        url_file.write(pg_url)
+        url_file.close()
+        print("Url salvato in .postgres_url_cached")
+        return pg_url
+    except:
+        print(terminalColors.FAIL + "Impossibile trovare l'url al DB postgres su Heroku" + terminalColors.ENDC)
+        print(terminalColors.WARNING + "[-]Controllare la variabile 'path_to_geckodriver' in manage.py")
+        print("[-]Deve essere installato Firefox e il file geckodriver presente alla path indicata")
+        print("[-]Per maggiori info o dubbi aprire una issue su gitlab" + terminalColors.ENDC)
+        print(terminalColors.FAIL + "Quitting" + terminalColors.ENDC)
+        exit(1)
+
+def get_db_connection(session):
+    if 'PG_URL_MANAGE' in environ:
+        print("Url slavato in precedenza")
+        try:
+            db_connection = DB_Connection(environ['PG_URL_MANAGE'])
+        except:
+            print("URL non valido, tetativo di ricezione nuovo url")
+            db_connection = DB_Connection(get_pg_url(session))
+    else:
+        db_connection = DB_Connection(get_pg_url(session))
+
+    return db_connection
 
 
 def print_products(products):
@@ -354,31 +393,13 @@ def main():
                             history=FileHistory('.manage_history'),
                             auto_suggest=AutoSuggestFromHistory())
 
-    '''validator = Validator.from_callable(
-        is_number,
-        error_message='This input contains non-numeric characters',
-        move_cursor_to_end=True)
-    '''
+    if path.exists(".postgres_url_cached"):
+        environ['PG_URL_MANAGE'] = open(".postgres_url_cached", "r").read()
 
-    heroku_mail = session.prompt("Heroku email: ")
-    heroku_password = session.prompt("Heroku password: ", is_password=True)
-    heroku_prject_name = session.prompt("Heroku project name: ", is_password=False)
-    heroku_project_index = int(session.prompt("Heroku project index (in dashboard) (index starts from 0): "))
-
-    path_to_geckodriver = "/Users/marco/Downloads/geckodriver"
-
-    try:
-        pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver, heroku_project_index)
-        #pg_url = "postgres://fyoqpbctzdznrr:7ea4944c845d3ccc13f21022dff78137d352da194781112fd101d9830e7998ee@ec2-54-75-224-168.eu-west-1.compute.amazonaws.com:5432/d2ig29ct3113ik"
-    except:
-        print(terminalColors.FAIL + "Impossibile trovare l'url al DB postgres su Heroku" + terminalColors.ENDC)
-        print(terminalColors.WARNING + "[-]Controllare la variabile 'path_to_geckodriver' in manage.py")
-        print("[-]Deve essere installato Firefox e il file geckodriver presente alla path indicata")
-        print("[-]Per maggiori info o dubbi aprire una issue su gitlab" + terminalColors.ENDC)
-        print(terminalColors.FAIL + "Quitting" + terminalColors.ENDC)
-        exit(1)
-
-    db_manager = DB_Connection(pg_url)
+    if len(argv) == 1:
+        db_manager = get_db_connection(session)
+    elif argv[1] == '--new-pg-url':
+        db_manager = DB_Connection(get_pg_url(session))
 
     while True:
         try:
