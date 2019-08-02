@@ -6,24 +6,32 @@ def lista(bot, update):
 
     products = gv.db_manager.getAllProduct()
     products = list(filter(lambda product: product.quantity > 0, products))
+    products.sort(key=lambda p: p.name)
     keyboard = []
 
-    for i in range(len(products) // 3):
+    while len(products) > 0:
         row = []
-        for j in range(3):
-            product = products[i * 3 + j]
-            nome = str(product.quantity) + " - " + product.name + " : €" + str(product.price)
+        product = products.pop(0)
+        nome = product.name + ": €" + str(product.price)
+        if len(nome) > 19:
+            #row with one product
             row.append(InlineKeyboardButton(nome, callback_data=product.id))
+        else:
+            #row with two products
+            nome = product.name + ": €" + str(product.price)
+            row.append(InlineKeyboardButton(nome, callback_data=product.id))
+            if len(products) > 1:
+                #c'è almeno un altro prodotto
+                product2 = products.pop(0)
+                nome2 = product2.name + ": €" + str(product2.price)
+                if len(nome2) <= 19:
+                    #il nome del prodotto ha una lunghezza accettabile
+                    row.append(InlineKeyboardButton(nome2, callback_data=product.id))
+                else:
+                    #il nome del prodotto non ha un alunghezza accettabile => lo reiserisco in cima
+                    products.insert(0, product2)
 
         keyboard.append(row)
-
-    row = []
-    for i in range(len(products) % 3):
-        product = products[len(products) - i - 1]
-        nome = str(product.quantity) + " - " + product.name + " : €" + str(product.price)
-        row.append(InlineKeyboardButton(nome, callback_data=product.id))
-
-    keyboard.append(row)
 
     if len(keyboard):
 
