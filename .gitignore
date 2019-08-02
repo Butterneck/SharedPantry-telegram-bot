@@ -1,6 +1,12 @@
+#cached postgres url in manage
+.postgres_url_cached
+
+#file fi backup
+backup.gz
+
 #Annoying things
 .DS_Store
-
+.manage_history
 #Ide things
 .idea/
 
