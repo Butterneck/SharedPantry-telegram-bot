@@ -352,11 +352,81 @@ def run_query(db_manager, args=[]):
             print(result)
 
 
+def print_help():
+    print(terminalColors.BOLD + 'Cianobot manage utility help' + terminalColors.ENDC)
+    print(terminalColors.UNDERLINE + 'Launch:' + terminalColors.ENDC)
+
+    print_formatted_text(HTML('./manage.py'))
+    print('\tLaunch this utility')
+
+    print('./manage.py --new-pg-url')
+    print('\tLaunch this utility and change the cached postgresql database url saved in .postgrers_url_cached file')
+
+    print('./manage.py --help')
+    print('\tShow this help')
+
+    print('')
+
+    print(terminalColors.UNDERLINE + 'Commands:' + terminalColors.ENDC)
+
+    print('[*]' + terminalColors.UNDERLINE + 'Lists:' + terminalColors.ENDC)
+
+    print('\tlist_products')
+    print("\t\tPrint all products")
+
+    print('\tlist_users')
+    print("\t\tPrint all users")
+
+    print('\tlist_transactions')
+    print("\t\tPrint all transactions")
+
+    print('[*]' + terminalColors.UNDERLINE + 'Insert:' + terminalColors.ENDC)
+
+    print('\tinsert_new_product')
+    print("\t\tInsert a new product")
+
+    print('\tinsert_new_user')
+    print("\t\tInsert a new user")
+
+    print('\tinsert_new_transaction')
+    print("\t\tInsert a new transaction")
+
+    print('[*]' + terminalColors.UNDERLINE + 'Remove:' + terminalColors.ENDC)
+
+    print('\tremove_product')
+    print("\t\t" + terminalColors.ITALIC + "Not implemented yet" + terminalColors.ENDC + " Remove a product")
+
+    print('\tremove_user')
+    print("\t\t" + terminalColors.ITALIC+ "Not implemented yet" + terminalColors.ENDC + " Remove a user")
+
+    print('\tremove_transaction')
+    print("\t\tRemove a transaction")
+
+    print('[*]' + terminalColors.UNDERLINE + 'Trigger:' + terminalColors.ENDC)
+
+    print('\ttrigger_backup')
+    print("\t\t" + terminalColors.ITALIC + "Not working" + terminalColors.ENDC + " Trigger the backup process")
+
+    print('\ttrigger_send_conto')
+    print("\t\t" + terminalColors.ITALIC + "Not working" + terminalColors.ENDC + " Trigger the send monthly message process")
+
+    print('[*]' + terminalColors.UNDERLINE + 'Others:' + terminalColors.ENDC)
+
+    print('\tmodify_quantity')
+    print("\t\tModify the quantity of a product")
+
+    print('\tdrop_all_tables')
+    print("\t\t" + terminalColors.BOLD + "Warning - dangerous operation" + terminalColors.ENDC + " Delete all data from database")
+
+    print('\trun_query')
+    print("\t\t" + terminalColors.BOLD + "Warning - dangerous operation" + terminalColors.ENDC + " Run an arbitrary query in databse")
+
+
 def handle_cmd(cmd, db_manager):
     args = cmd.split(' ')
     cmd = args.pop(0)
     if cmd == 'help':
-        print("--HELP--")
+        print_help()
     elif cmd == 'list_products':
         list_products(db_manager, args)
     elif cmd == 'list_users':
@@ -400,7 +470,11 @@ def main():
         db_manager = get_db_connection(session)
     elif argv[1] == '--new-pg-url':
         db_manager = DB_Connection(get_pg_url(session))
+    elif argv[1] == '--help':
+        print_help()
+        return
 
+    print(terminalColors.HEADER + "Welcome, write help to see what this utility can do" + terminalColors.ENDC)
     while True:
         try:
             text = session.prompt("> ", validator=None)
@@ -410,7 +484,6 @@ def main():
             break
         else:
             handle_cmd(text, db_manager)
-    print("Closing")
 
 
 if __name__ == '__main__':
