@@ -42,6 +42,27 @@ pytest
 
 Both the bot and the database are hosted on Heroku. The deployment is manually triggerable after the test phase ended in the pipeline
 
+## Manage.py - Utlity standalone for DB-management
+In this repo is provided a manage script that allow to perform operation on the database hosted on Heroku.
+
+To run it:
+
+```./manage.py```
+
+### Feature of manage.py
+- Show list of users, products and transactions
+- Insert new user, products and transactions
+- Remove transactions
+- Trigger backup process (*not working*)
+- Trigger send_month_debits process (*not working*)
+- Modify quantity of a product 
+- Clean (drop of all tables) of the database
+- Run an arbitrary query
+
+To obtain more help and feature of manage.py you can run it with `--help` option
+
+```./manage.py --help```
+
 ## Built With
 
 - [Python-telegram-bot](https://python-telegram-bot.org/) - The Telegram API wrapper used
@@ -51,8 +72,9 @@ Both the bot and the database are hosted on Heroku. The deployment is manually t
 
 ### TODOS:
 
-- Edit messagges in order to make the conversation experience even fancier
-- General code refactoring
+- [ ] Edit messagges in order to make the conversation experience even fancier
+- [ ] General code refactoring
+- [ ] Make it more *exception safe*
 
 ## Versioning
 
