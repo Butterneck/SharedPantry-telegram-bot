@@ -8,7 +8,7 @@ import globalVariables as gv
 In caso di fallimento dei test:
     * Aggiornare l'URL per l'istaziazione di db_manager_for_test
 '''
-db_manager_for_test = DB_Connection(DB_URL=gv.DB_URL_FOR_TEST)
+db_manager_for_test = DB_Connection(DB_URL=gv.DB_URL_FOR_TEST, db_name="Test_DB")
 
 
 user_data = [("Marco", 1),

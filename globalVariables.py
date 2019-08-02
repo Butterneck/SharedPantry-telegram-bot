@@ -9,12 +9,14 @@ DB_URL_FOR_TEST= "postgres://fyoqpbctzdznrr:7ea4944c845d3ccc13f21022dff78137d352
 DB_URL = ""
 if "DATABASE_URL" in os.environ:
     DB_URL = os.environ["DATABASE_URL"]
+    name = "Prod_DB"
 else:
     print(terminalColors.WARNING + "DATABASE_URL not found" + terminalColors.ENDC)
     DB_URL = DB_URL_FOR_TEST
+    name = "Test_DB"
 
 global db_manager
-db_manager = DB_Connection(DB_URL)
+db_manager = DB_Connection(DB_URL, name)
 
 
 global nuovoProdotto
