@@ -55,4 +55,5 @@ def debitoMensile(bot):
 
             bot.send_message(chat_id=chat_id, text=message)
 
-    bot.send_message(chat_id=gv.Filippo, text=messaggio_di_debito)
+    bot.send_message(chat_id=gv.Marco, text=messaggio_di_debito)
+    bot.send_message(chat_id=gv.Ciano, text=messaggio_di_debito)
