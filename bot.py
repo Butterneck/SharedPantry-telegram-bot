@@ -36,6 +36,10 @@ def aggiungi_prodotto(bot, update):
 
 def aggiungi_nome(bot, update, user_data):
     nome = update.message.text
+    if nome is None or nome == "":
+        update.message.reply_text("Nome non valido, per favore reinseriscilo")
+        return NOME
+
     user_data['nome'] = nome
     update.message.reply_text("Benissimo, ora dimmi il prezzo di " + nome)
     return PREZZO
@@ -43,6 +47,14 @@ def aggiungi_nome(bot, update, user_data):
 
 def aggiungi_prezzo(bot, update, user_data):
     prezzo = update.message.text
+    print(prezzo)
+    if prezzo is None or not prezzo.replace('.', '', 1).replace(',', '', 1).isdigit():
+        update.message.reply_text("Prezzo non valido, per favore reinseriscilo")
+        return PREZZO
+
+    if ',' in prezzo:
+        prezzo = prezzo.replace(',', '.')
+
     user_data['prezzo'] = prezzo
     update.message.reply_text("Benissimo, ora dimmi quanti " + user_data['nome'] + " ci sono")
     return QUANTITA
@@ -50,6 +62,10 @@ def aggiungi_prezzo(bot, update, user_data):
 
 def aggiungi_quantita(bot, update, user_data):
     qt = update.message.text
+    if qt is None or not qt.isdigit():
+        update.message.reply_text("Quantità non valida, per favore reinseriscilo")
+        return QUANTITA
+
     update.message.reply_text("Ottimo, " + user_data['nome'] + " aggiunto alla dispensa")
     gv.db_manager.addProduct(user_data['nome'], user_data['prezzo'], qt)
     user_data.clear()
