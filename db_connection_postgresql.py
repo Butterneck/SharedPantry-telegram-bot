@@ -6,7 +6,6 @@ import psycopg2
 import os
 from sys import exit
 
-
 from User import *
 from User_Prodotti import *
 from Prodotti import *
@@ -19,8 +18,10 @@ init_db = open("dispensa.sql").read()
 intro = terminalColors.OKGREEN + '[Database]: '
 end = terminalColors.ENDC
 
+
 def print_DB_unreachable(db_name):
     print(terminalColors.FAIL + '[Error]-[Database]: ' + db_name + ' not found' + end)
+
 
 class DB_Connection():
 
@@ -31,19 +32,20 @@ class DB_Connection():
         try:
             self.connection = psycopg2.connect(DB_URL, sslmode='require')
         except psycopg2.OperationalError as e:
-            print(terminalColors.FAIL + "Database " + self.db_name +" not reachable." + terminalColors.ENDC)
+            print(terminalColors.FAIL + "Database " + self.db_name + " not reachable." + terminalColors.ENDC)
             print(terminalColors.FAIL + "Exit" + terminalColors.ENDC)
             exit(1)
         else:
-            print(intro + self.db_name +" reachable")
+            print(intro + self.db_name + " reachable")
 
         self.db = self.connection.cursor()
-        self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
+        self.db.execute(
+            "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
         if self.db.fetchone()[0]:
             print(intro + self.db_name + ' already exists' + end)
         else:
-            print(intro + self.db_name + 'not found' + end)
-            print(intro + self.db_name + 'initialization' + end)
+            print(intro + self.db_name + ' not found' + end)
+            print(intro + self.db_name + ' initialization' + end)
             self.db.execute(init_db)
             self.connection.commit()
 
@@ -55,7 +57,8 @@ class DB_Connection():
     def existDB(self):
         self.cleanCursor()
         try:
-            self.db.execute( "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
+            self.db.execute(
+                "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
             return self.db.fetchone()[0]
         except:
             return False
@@ -82,48 +85,49 @@ class DB_Connection():
 
     def removeUser(self, chat_id):
         if self.existDB():
-            print(intro + self.db_name +  '...Rimuozione utente' + end)
+            print(intro + self.db_name + '...Rimuozione utente' + end)
             uid = str(self.getuserId_fromChatId(chat_id))
             self.cleanCursor()
-            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (uid, ))
+            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (uid,))
             self.connection.commit()
             return True
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.db_name + ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.db_name + ' not found' + end)
             return False
 
     def addProduct(self, name, price, qt):
         if self.existDB():
             print(intro + self.db_name + '...Aggiunta prodotto' + end)
             self.cleanCursor()
-            self.db.execute('INSERT INTO Prodotti(Name, Price, Quantity) VALUES(%s, %s, %s) RETURNING Id;', (name, price, qt))
+            self.db.execute('INSERT INTO Prodotti(Name, Price, Quantity) VALUES(%s, %s, %s) RETURNING Id;',
+                            (name, price, qt))
             self.connection.commit()
             return Product(self.db.fetchone()[0], name, price, qt)
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.db_name + ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.db_name + ' not found' + end)
             return None
 
     def removeProduct(self, product_id):
         if self.existDB():
             print(intro + self.db_name + '...Rimuovi prodotto' + end)
             self.cleanCursor()
-            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (product_id, ))
+            self.db.execute('DELETE FROM Prodotti WHERE Id = %s;', (product_id,))
             self.connection.commit()
             return True
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ self.db_name + ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.db_name + ' not found' + end)
             return False
 
     def modifyQuantity(self, product_id, qt):
-            if self.existDB():
-                print(intro + self.db_name + '...Modifica quantità' + end)
-                self.cleanCursor()
-                self.db.execute('UPDATE Prodotti SET Quantity = %s WHERE Id = %s;', (qt, product_id))
-                self.connection.commit()
-                return True
-            else:
-                print(terminalColors.FAIL + '[Error]-[Database]: ' + self.db_name + ' not found' + end)
-                return None
+        if self.existDB():
+            print(intro + self.db_name + '...Modifica quantità' + end)
+            self.cleanCursor()
+            self.db.execute('UPDATE Prodotti SET Quantity = %s WHERE Id = %s;', (qt, product_id))
+            self.connection.commit()
+            return True
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + self.db_name + ' not found' + end)
+            return None
 
     def addTransaction(self, chat_id, product_id, qt):
         if self.existDB():
@@ -131,76 +135,77 @@ class DB_Connection():
             uid = self.getuserId_fromChatId(chat_id)
             print(intro + self.db_name + '...Aggiunta transazione' + end)
             self.cleanCursor()
-            self.db.execute('SELECT Quantity FROM Prodotti WHERE Id = %s', (product_id, ))
+            self.db.execute('SELECT Quantity FROM Prodotti WHERE Id = %s', (product_id,))
             lastQuantity = int(self.db.fetchone()[0])
 
             if lastQuantity == 0:
-                #Eccezione
+                # Eccezione
                 raise Exception("Acquisto non possibile")
 
-            if lastQuantity-qt >= 0:
-                #Ci sono ancora, aggiorno semplicemente
+            if lastQuantity - qt >= 0:
+                # Ci sono ancora, aggiorno semplicemente
                 self.cleanCursor()
-                self.db.execute('INSERT INTO User_Prodotti(User_Id, Prodotto_Id, Data, Quantity) VALUES(%s, %s, %s, %s);', (uid, product_id, d, qt))
+                self.db.execute(
+                    'INSERT INTO User_Prodotti(User_Id, Prodotto_Id, Data, Quantity) VALUES(%s, %s, %s, %s);',
+                    (uid, product_id, d, qt))
                 self.connection.commit()
-                self.modifyQuantity(product_id, lastQuantity-qt)
+                self.modifyQuantity(product_id, lastQuantity - qt)
             else:
-                #Prodotto è finit, impsoto la quantità a 0
+                # Prodotto è finit, impsoto la quantità a 0
                 self.modifyQuantity(product_id, 0)
             return User_Prodotti(self.db.lastrowid, uid, product_id, d, qt)
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: ' +  ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def removeTransaction(self, transaction_id):
         if self.existDB():
             print(intro + self.db_name + '...Rimozione transazione' + end)
             self.cleanCursor()
-            self.db.execute('DELETE FROM User_Prodotti WHERE Id = %s;', (transaction_id, ))
+            self.db.execute('DELETE FROM User_Prodotti WHERE Id = %s;', (transaction_id,))
             self.connection.commit()
             return True
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: ' +  ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return False
 
     def getUserId(self, username):
         if self.existDB():
             print(intro + self.db_name + '...getUserId' + end)
             self.cleanCursor()
-            self.db.execute('SELECT Id FROM Users WHERE Username = %s', (username, ))
+            self.db.execute('SELECT Id FROM Users WHERE Username = %s', (username,))
             return int(self.db.fetchone()[0])
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getuserId_fromChatId(self, chat_id):
         if self.existDB():
             print(intro + self.db_name + '...getUserId_fromChatId' + end)
             self.cleanCursor()
-            self.db.execute('SELECT Id FROM Users WHERE Chat_Id = %s', (chat_id, ))
+            self.db.execute('SELECT Id FROM Users WHERE Chat_Id = %s', (chat_id,))
             query = self.db.fetchone()
             if query is not None:
                 return query[0]
             else:
                 return None
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getUsername_fromChatId(self, chat_id):
         if self.existDB():
             print(intro + self.db_name + '...getUsername_fromChatId' + end)
             self.cleanCursor()
-            self.db.execute('SELECT Username FROM Users WHERE Chat_Id = %s', (chat_id, ))
+            self.db.execute('SELECT Username FROM Users WHERE Chat_Id = %s', (chat_id,))
             query = self.db.fetchone()
             if query is not None:
                 return query[0]
             else:
                 return None
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
-
 
     def getAllProduct(self):
         if self.existDB():
@@ -213,7 +218,7 @@ class DB_Connection():
                 prodotti.append(Product(el[0], el[1], el[2], el[3]))
             return prodotti
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getAllChatIds(self):
@@ -227,7 +232,7 @@ class DB_Connection():
                 chat_ids.append(el[0])
             return chat_ids
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getAllAcquisti(self, chat_id):
@@ -236,13 +241,13 @@ class DB_Connection():
             uid = self.getuserId_fromChatId(chat_id)
             print(intro + self.db_name + '...getAllAcquisti' + end)
             self.cleanCursor()
-            self.db.execute('SELECT * FROM User_Prodotti WHERE User_Id = %s', (uid, ))
+            self.db.execute('SELECT * FROM User_Prodotti WHERE User_Id = %s', (uid,))
             query = self.db.fetchall()
             for el in query:
                 acquisti.append(User_Prodotti(el[0], el[1], el[2], el[3], el[4]))
             return acquisti
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getAcquistiIn(self, chat_id, data_inizio, data_fine):
@@ -251,13 +256,14 @@ class DB_Connection():
             uid = self.getuserId_fromChatId(chat_id)
             print(intro + self.db_name + '...getAcquistiIn' + end)
             self.cleanCursor()
-            self.db.execute('SELECT * FROM User_Prodotti WHERE User_Id = %s AND Data >= %s AND Data <= %s', (uid, data_inizio, data_fine))
+            self.db.execute('SELECT * FROM User_Prodotti WHERE User_Id = %s AND Data >= %s AND Data <= %s',
+                            (uid, data_inizio, data_fine))
             query = self.db.fetchall()
             for el in query:
                 acquisti.append(User_Prodotti(el[0], el[1], el[2], el[3], el[4]))
             return acquisti
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getAllDebits(self):
@@ -271,7 +277,7 @@ class DB_Connection():
                 acquisti.append(User_Prodotti(el[0], el[1], el[2], el[3], el[4]))
             return acquisti
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def getAllusers(self):
@@ -285,7 +291,7 @@ class DB_Connection():
                 utenti.append(User(el[0], el[1], el[2]))
             return utenti
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: '+ ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
 
     def dropAllTables(self):
@@ -296,7 +302,7 @@ class DB_Connection():
             self.connection.commit()
             self.db.execute(init_db)
             self.connection.commit()
-            print(intro + self.db_name +  ' initialization' + end)
+            print(intro + self.db_name + ' initialization' + end)
             return True
         else:
             print_DB_unreachable(self.db_name)
@@ -309,7 +315,7 @@ class DB_Connection():
             self.db.execute('UPDATE Activator SET Activator = 1')
             self.connection.commit()
         else:
-            print(intro + self.db_name +  ' not found' + end)
+            print(intro + self.db_name + ' not found' + end)
 
     def deactivateActivator(self):
         if self.existDB():
@@ -318,29 +324,29 @@ class DB_Connection():
             self.db.execute('UPDATE Activator SET Activator = 0')
             self.connection.commit()
         else:
-            print(intro + self.db_name +  ' not found' + end)
+            print(intro + self.db_name + ' not found' + end)
 
     def checkActivator(self):
         if self.existDB():
-            print(intro + self.db_name +  '...checkActivator' + end)
+            print(intro + self.db_name + '...checkActivator' + end)
 
             self.cleanCursor()
             self.db.execute('SELECT * FROM Activator')
             if len(self.db.fetchall()) == 0:
-                print(intro + self.db_name +  '...createActivatorRow' + end)
+                print(intro + self.db_name + '...createActivatorRow' + end)
                 self.db.execute('INSERT INTO Activator(activator) VALUES(1)')
                 self.connection.commit()
 
             self.db.execute('SELECT Activator FROM Activator')
             if self.db.fetchone()[0]:
-                print(intro + self.db_name +  ' activator activated' + end)
+                print(intro + self.db_name + ' activator activated' + end)
                 print('Done')
                 return True
             print('Done')
             return False
         else:
-            print(intro + self.db_name +  ' not found' + end)
-            print(intro + self.db_name +  ' initializing activator' + end)
+            print(intro + self.db_name + ' not found' + end)
+            print(intro + self.db_name + ' initializing activator' + end)
             self.deactivateActivator()
             return False
 
@@ -348,13 +354,13 @@ class DB_Connection():
         if self.existDB():
             print(intro + self.db_name + "...checkTransaction_forProducts" + end)
             self.cleanCursor()
-            self.db.execute('SELECT * FROM User_Prodotti WHERE Prodotto_Id = %s;', (product_id, ))
+            self.db.execute('SELECT * FROM User_Prodotti WHERE Prodotto_Id = %s;', (product_id,))
 
             if len(self.db.fetchall()) != 0:
-                print(intro + self.db_name +  "Prodotto non eliminabile, transazioni correlate" + end)
+                print(intro + self.db_name + "Prodotto non eliminabile, transazioni correlate" + end)
                 return False
             else:
-                print(intro + self.db_name +  "Prodotto eliminabile" + end)
+                print(intro + self.db_name + "Prodotto eliminabile" + end)
                 return True
 
     def activateBackup(self):
@@ -364,7 +370,7 @@ class DB_Connection():
             self.db.execute('UPDATE Backup SET Backup = 1')
             self.connection.commit()
         else:
-            print(intro + self.db_name +  'not found' + end)
+            print(intro + self.db_name + 'not found' + end)
 
     def deactivateBackup(self):
         if self.existDB():
@@ -373,7 +379,7 @@ class DB_Connection():
             self.db.execute('UPDATE Backup SET Backup = 0')
             self.connection.commit()
         else:
-            print(intro + self.db_name +  'not found' + end)
+            print(intro + self.db_name + 'not found' + end)
 
     def checkBackup(self):
         if self.existDB():
@@ -381,26 +387,25 @@ class DB_Connection():
             self.cleanCursor()
             self.db.execute('SELECT * FROM Backup')
             if len(self.db.fetchall()) == 0:
-                print(intro + self.db_name +  '...createBackupRow' + end)
+                print(intro + self.db_name + '...createBackupRow' + end)
                 self.db.execute('INSERT INTO Backup(backup) VALUES(1)')
                 self.connection.commit()
 
             self.db.execute('SELECT Backup FROM Backup')
             if self.db.fetchone()[0]:
-                print(intro + self.db_name +  ' backup activated' + end)
+                print(intro + self.db_name + ' backup activated' + end)
                 print('Done')
                 return True
             print('Done')
             return False
         else:
-            print(intro + self.db_name +  ' not found' + end)
-            print(intro + self.db_name +  ' initializing backup' + end)
+            print(intro + self.db_name + ' not found' + end)
+            print(intro + self.db_name + ' initializing backup' + end)
             self.deactivateBackup()
             return False
 
     def cleanCursor(self):
         self.connection.rollback()
-
 
     def runSqlQuery(self, query):
         if self.existDB():
@@ -413,5 +418,5 @@ class DB_Connection():
             except:
                 return True
         else:
-            print(terminalColors.FAIL + '[Error]-[Database]: ' +  ' not found' + end)
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
