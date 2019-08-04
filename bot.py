@@ -40,6 +40,10 @@ def aggiungi_nome(bot, update, user_data):
         update.message.reply_text("Nome non valido, per favore reinseriscilo")
         return NOME
 
+    if nome == "annulla":
+        update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
+        return aggiorna_dispensa(bot, update)
+
     user_data['nome'] = nome
     update.message.reply_text("Benissimo, ora dimmi il prezzo di " + nome)
     return PREZZO
@@ -48,6 +52,11 @@ def aggiungi_nome(bot, update, user_data):
 def aggiungi_prezzo(bot, update, user_data):
     prezzo = update.message.text
     print(prezzo)
+
+    if prezzo == "annulla":
+        update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
+        return aggiorna_dispensa(bot, update)
+
     if prezzo is None or not prezzo.replace('.', '', 1).replace(',', '', 1).isdigit():
         update.message.reply_text("Prezzo non valido, per favore reinseriscilo")
         return PREZZO
@@ -62,6 +71,11 @@ def aggiungi_prezzo(bot, update, user_data):
 
 def aggiungi_quantita(bot, update, user_data):
     qt = update.message.text
+
+    if nome == "annulla":
+        update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
+        return aggiorna_dispensa(bot, update)
+
     if qt is None or not qt.isdigit():
         update.message.reply_text("Quantità non valida, per favore reinseriscilo")
         return QUANTITA
