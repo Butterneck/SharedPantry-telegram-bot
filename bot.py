@@ -183,6 +183,21 @@ def auth(bot, update, user_data):
         update.message.reply_text("Password errata" + divieto + " digita /start per riprovare")
         return ConversationHandler.END
 
+
+def help(bot, update):
+    help_message = """Ciao, ecco i comandi che puoi usare con me:\n
+                                    /prendi - Permette di ottenere la lista di prodotti attualmente disponibili all'acquisto in taverna. Affianco ad ogni prodotto
+                                    e' scritto il relativo prezzo. Per acquistare un prodotto premi semplicemente sopra di esso, questo verra' aggiunto al tuo conto mensile.\n
+                                    /conto - Permette di vedere il resoconto delle proprie spese in taverna nel corso dell'ultimo mese (a partire dalle 00:00 del primo giorno del mese
+                                    corrente). Il resoconto permette di vedere i prodotti acquistati e la relativa quantita', oltre che mostrare una pratica somma comprendente tutti
+                                    gli acquisti effettuati.\n
+                                    /help - mostra questo messaggio di aiuto\n
+                                    Ricorda: al termine di ogni mese verra' calcolato il debito accumulato durante il mese appena concluso e, se
+                                     il conto dovesse risultare non nullo riceverai un messaggio contentente il tuo debito accumulato. Allo stesso tempo verra' notificata a ciano l'entita' del
+                                     tuo debito.
+                                     Buoni acquisti in taverna"""
+    update.message.reply_text(help_message)
+
 def main():
 
     TOKEN = "757571867:AAHrPE1iyZ5FrWoH412U9Ubq6sO-tFA29jM"
@@ -231,6 +246,7 @@ def main():
     dp.add_handler(CommandHandler('prendi', lista))
     dp.add_handler(CallbackQueryHandler(button, pass_chat_data=True))
     dp.add_handler(CommandHandler('conto', conto))
+    dp.add_handler(CommandHandler('help', help))
 
 
     if "HEROKU" in os.environ:
