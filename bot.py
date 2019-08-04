@@ -197,7 +197,6 @@ def help(bot, update):
                                     " tuo debito.\n\n"
                                     "Buoni acquisti in taverna")
 
-2019-08-04T15:54:36.466777+00:00 app[web.1]: IndentationError: unexpected ind
     update.message.reply_text(help_message)
 
 def main():
