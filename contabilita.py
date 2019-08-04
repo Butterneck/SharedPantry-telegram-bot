@@ -33,7 +33,10 @@ def debitoMensile(bot):
     messaggio_di_debito = "Ecco chi ha acquistato dalla taverna questo mese:\n"
 
     for chat_id in chat_ids:
-        acquisti = gv.db_manager.getAcquistiIn(chat_id, datetime.date.today().replace(day=1), datetime.date.today())
+        # datetime.date.today().replace(day=1).replace(month=datetime.date.today().month - 1) Dovrebbe ritornare il primo giorno del mese precedente
+        # datetime.date.today() - timedelta(days=1) Dovrebbe ritornare il giorno precedente ad oggi, per cui assumendo che la funzione debitoMensile venga eseguita
+        # solamente il primo giorno del mese all'incirca alle 00:00, allora il giorno ritornato dovrebbe essere l'ultimo giorno del mese precedente
+        acquisti = gv.db_manager.getAcquistiIn(chat_id, datetime.date.today().replace(day=1).replace(month=datetime.date.today().month - 1), datetime.date.today() - timedelta(days=1))
 
         allProducts = gv.db_manager.getAllProduct()
 

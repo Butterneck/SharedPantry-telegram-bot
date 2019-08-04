@@ -191,7 +191,7 @@ def help(bot, update):
                                     "/conto - Permette di vedere il resoconto delle proprie spese in taverna nel corso dell'ultimo mese. "
                                     "Il resoconto permette di vedere i prodotti acquistati e la relativa quantita', oltre che mostrare una pratica somma comprendente tutti "
                                     "gli acquisti effettuati.\n\n"
-                                    "/help - mostra questo messaggio di aiuto\n\n"
+                                    "/help - Mostra questo messaggio di aiuto\n\n"
                                     "Ricorda: al termine di ogni mese verra' calcolato il debito accumulato durante il mese appena concluso e, se"
                                     " il conto dovesse risultare non nullo, riceverai un messaggio contentente il tuo debito accumulato. Allo stesso tempo verra' notificata a Ciano l'entita' del"
                                     " tuo debito.\n\n"
