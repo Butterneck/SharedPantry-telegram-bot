@@ -85,12 +85,12 @@ def get_db_connection(session):
     if 'PG_URL_MANAGE' in environ:
         print("Url slavato in precedenza")
         try:
-            db_connection = DB_Connection(environ['PG_URL_MANAGE'], name_DB)
+            db_connection = DB_Connection(environ['PG_URL_MANAGE'], db_name=name_DB)
         except:
             print("URL non valido, tetativo di ricezione nuovo url")
-            db_connection = DB_Connection(get_pg_url(session), name_DB)
+            db_connection = DB_Connection(get_pg_url(session), db_name=name_DB)
     else:
-        db_connection = DB_Connection(get_pg_url(session), name_DB)
+        db_connection = DB_Connection(get_pg_url(session), db_name=name_DB)
 
     return db_connection
 
