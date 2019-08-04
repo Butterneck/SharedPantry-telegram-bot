@@ -14,6 +14,7 @@ from os import environ, path
 import Utils
 import datetime
 from url_getter import get_pg_url_from_heroku
+from geckodriver_getter import get_geckodriver_binary
 from db_connection_postgresql import *
 
 command_completer = WordCompleter(['help',
@@ -32,11 +33,27 @@ command_completer = WordCompleter(['help',
                                    'trigger_send_conto',
                                    'run_query'], ignore_case=True)
 
-from prompt_toolkit.validation import Validator
 
+def get_path_to_geckodriver(session):
+    if 'GECKODRIVER_PATH' not in environ:
+        path_to_geckodriver = session.prompt("Path to geckodriver file (empty to download it): ")
+        if path_to_geckodriver == "":
+            # Dowload geckodriver in ./geckdriver
+            print(terminalColors.ITALIC + "Download geckodriver in this directory" + terminalColors.ENDC)
+            print(terminalColors.WARNING + "You need also Firefox to get postgresql databse url from Heroku" + terminalColors.ENDC)
+            path_to_geckodriver = "./geckodriver"
 
-def is_number(text):
-    return text.isdigit()
+        if not get_geckodriver_binary(path_to_geckodriver):
+            print(terminalColors.FAIL + "Daownload of geckodriver failed" + terminalColors.ENDC)
+            exit(1)
+
+        url_file = open(".path_to_geckodriver", "w+")
+        url_file.write(path_to_geckodriver)
+        url_file.close()
+        print("Path salvata in .path_to_geckodriver")
+        return path_to_geckodriver
+    else:
+        return environ['GECKODRIVER_PATH']
 
 
 def get_pg_url(session):
@@ -45,7 +62,7 @@ def get_pg_url(session):
     heroku_prject_name = session.prompt("Heroku project name: ", is_password=False)
     heroku_project_index = int(session.prompt("Heroku project index (in dashboard) (index starts from 0): "))
 
-    path_to_geckodriver = "/Users/marco/Downloads/geckodriver"
+    path_to_geckodriver = get_path_to_geckodriver(session)
 
     try:
         pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver,
@@ -466,6 +483,9 @@ def main():
 
     if path.exists(".postgres_url_cached"):
         environ['PG_URL_MANAGE'] = open(".postgres_url_cached", "r").read()
+
+    if path.exists(".path_to_geckodriver"):
+        environ['GECKODRIVER_PATH'] = open(".path_to_geckodriver", "r").read()
 
     if len(argv) == 1:
         db_manager = get_db_connection(session)

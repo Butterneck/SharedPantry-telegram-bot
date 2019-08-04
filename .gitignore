@@ -1,3 +1,7 @@
+#geckodriver
+geckodriver
+.path_to_geckodriver
+
 #cached postgres url in manage
 .postgres_url_cached
 
