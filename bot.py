@@ -185,7 +185,7 @@ def auth(bot, update, user_data):
 
 
 def help(bot, update):
-    help_message = "Ciao, ecco i comandi che puoi usare con me:\n"
+    help_message = ("Ciao, ecco i comandi che puoi usare con me:\n"
                                     "/prendi - Permette di ottenere la lista di prodotti attualmente disponibili all'acquisto in taverna. Affianco ad ogni prodotto"
                                     "e' scritto il relativo prezzo. Per acquistare un prodotto premi semplicemente sopra di esso, questo verra' aggiunto al tuo conto mensile.\n"
                                     "/conto - Permette di vedere il resoconto delle proprie spese in taverna nel corso dell'ultimo mese (a partire dalle 00:00 del primo giorno del mese"
