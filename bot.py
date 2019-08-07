@@ -72,7 +72,7 @@ def aggiungi_prezzo(bot, update, user_data):
 def aggiungi_quantita(bot, update, user_data):
     qt = update.message.text
 
-    if nome == "annulla":
+    if qt == "annulla":
         update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
         return aggiorna_dispensa(bot, update)
 
