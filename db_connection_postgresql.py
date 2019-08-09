@@ -420,3 +420,13 @@ class DB_Connection():
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
+
+    def getProductName_fromId(self, product_id):
+        if self.existDB():
+            print(intro + self.db_name + '...getProductName_fromId' + end)
+            self.cleanCursor()
+            self.db.execute('SELECT Name FROM Prodotti WHERE Id=%s', (product_id,))
+            return self.db.fetchone()[0]
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
+            return None
