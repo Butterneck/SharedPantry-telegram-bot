@@ -183,7 +183,7 @@ class DB_Connection():
         if self.existDB():
             print(intro + self.db_name + '...getUserId_fromChatId' + end)
             self.cleanCursor()
-            self.db.execute('SELECT Id FROM Users WHERE Chat_Id = %s', (chat_id,))
+            self.db.execute('SELECT Id FROM users WHERE Chat_Id = %s', (chat_id,))
             query = self.db.fetchone()
             if query is not None:
                 return query[0]
