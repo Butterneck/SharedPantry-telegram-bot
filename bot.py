@@ -42,7 +42,7 @@ def aggiungi_nome(bot, update, user_data):
 
     if nome == "annulla":
         update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
-        return aggiorna_dispensa(bot, update)
+        return aggiorna_dispensa(bot, update, user_data)
 
     user_data['nome'] = nome
     update.message.reply_text("Benissimo, ora dimmi il prezzo di " + nome)
@@ -55,7 +55,7 @@ def aggiungi_prezzo(bot, update, user_data):
 
     if prezzo == "annulla":
         update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
-        return aggiorna_dispensa(bot, update)
+        return aggiorna_dispensa(bot, update, user_data)
 
     if prezzo is None or not prezzo.replace('.', '', 1).replace(',', '', 1).isdigit():
         update.message.reply_text("Prezzo non valido, per favore reinseriscilo")
@@ -74,7 +74,7 @@ def aggiungi_quantita(bot, update, user_data):
 
     if qt == "annulla":
         update.message.reply_text("Aggiunta nuovo prodotto annullata correttamente")
-        return aggiorna_dispensa(bot, update)
+        return aggiorna_dispensa(bot, update, user_data)
 
     if qt is None or not qt.isdigit():
         update.message.reply_text("Quantità non valida, per favore reinseriscilo")
@@ -83,7 +83,7 @@ def aggiungi_quantita(bot, update, user_data):
     update.message.reply_text("Ottimo, " + user_data['nome'] + " aggiunto alla dispensa")
     gv.db_manager.addProduct(user_data['nome'], user_data['prezzo'], qt)
     user_data.clear()
-    return aggiorna_dispensa(bot, update)
+    return aggiorna_dispensa(bot, update, user_data)
 
 def done(bot, update, user_data):
     user_data.clear()
@@ -91,9 +91,12 @@ def done(bot, update, user_data):
     return ConversationHandler.END
 
 
-def aggiorna_dispensa(bot, update):
-    if int(update.message.chat_id) not in gv.admin_id:
-        return ConversationHandler.END
+def aggiorna_dispensa(bot, update, user_data):
+    if update.message:
+        user_data['chat_id'] = update.message.chat_id
+        if int(update.message.chat_id) not in gv.admin_id:
+            return ConversationHandler.END
+
     products = gv.db_manager.getAllProduct()
     keyboard = []
 
@@ -117,7 +120,7 @@ def aggiorna_dispensa(bot, update):
     keyboard.append([InlineKeyboardButton("aggiungi", callback_data='aggiungi'),InlineKeyboardButton("Termina", callback_data='termina')])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("Ok, seleziona il prodotto da aggionare", reply_markup=reply_markup)
+    bot.send_message(chat_id=user_data['chat_id'], text="Ok, seleziona il prodotto da aggionare", reply_markup=reply_markup)
     return AGGIORNA_SELEZIONE
 
 
@@ -131,32 +134,32 @@ def aggiornaProdottiButton(bot, update, user_data, chat_data):
         return ConversationHandler.END
     elif data.data == 'edit_nome':
         product_name = gv.db_manager.getProductName_fromId(user_data['product_id'])
-        update.edit_message_text(text="Modalita' cambio nome:\nDimmi il nuovo nome per %s", (product_name,))
+        data.edit_message_text(text="Modalita' cambio nome:\nDimmi il nuovo nome per %s" % product_name)
         return AGGIORNA_NOME
     elif data.data == 'edit_qt':
         product_name = gv.db_manager.getProductName_fromId(user_data['product_id'])
-        update.edit_message_text(text="Modalita' aggiornamento quantita':\nDimmi quanti elementi vuoi aggiungere a %s", (product_name,))
+        data.edit_message_text(text="Modalita' aggiornamento quantita':\nDimmi quanti elementi vuoi aggiungere a %s" % product_name)
         return AGGIORNA_QUANTITA
     elif data.data == 'edit_annulla':
         product_name = gv.db_manager.getProductName_fromId(user_data['product_id'])
-        update.edit_message_text(text="Aggiornamento di %s avvenuto con successo", (product_name,))
-        return aggiorna_dispensa(bot, update)
+        data.edit_message_text(text="Aggiornamento di %s annullato con successo" % product_name)
+        return aggiorna_dispensa(bot, update, user_data)
     elif data.data == 'remove_product':
         product_name = gv.db_manager.getProductName_fromId(user_data['product_id'])
         # Magari aggiungere una conferma
         if gv.db_manager.checkTransaction_forProducts(user_data['product_id']):
             gv.db_manager.removeProduct(user_data['product_id'])
-            update.edit_message_text(text="Eliminazione %s avvenuta con successo", (product_name,))
+            data.edit_message_text(text="Eliminazione %s avvenuta con successo" % product_name)
         else:
-            update.edit_message_text(text="%s non eliminabile, ci sono delle transazioni collegate", (product_name,))
-        return aggiorna_dispensa(bot, update)
+            data.edit_message_text(text="%s non eliminabile, ci sono delle transazioni collegate" % product_name)
+        return aggiorna_dispensa(bot, update, user_data)
     else:
         user_data['product_id'] = data.data
         product_name = gv.db_manager.getProductName_fromId(user_data['product_id'])
         keyboard = [[InlineKeyboardButton("Nome", callback_data='edit_nome'), InlineKeyboardButton("Quantita'", callback_data='edit_qt')],
                                 [InlineKeyboardButton("Elimina", callback_data='remove_product'), InlineKeyboardButton("Annulla", callback_data='edit_annulla')]]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        data.edit_message_text(text = "%s selezionato, cosa vuoi modificare?", (product_name,), reply_markup=reply_markup)
+        data.edit_message_text(text = "%s selezionato, cosa vuoi modificare?" % product_name, reply_markup=reply_markup)
         return AGGIORNA_SELEZIONE
 
 
@@ -168,11 +171,12 @@ def aggiorna_quantita(bot, update, user_data):
     qtToAdd = int(update.message.text)
     gv.db_manager.modifyQuantity(user_data['product_id'], currentQt + qtToAdd)
     update.message.reply_text("Ottimo, aggiornato!")
-    return aggiorna_dispensa(bot, update)
+    return aggiorna_dispensa(bot, update, user_data)
 
 
 def aggiorna_nome(bot, update, user_data):
     update.message.reply_text("Funzione non ancora implementata")
+    return aggiorna_dispensa(bot, update, user_data)
 
 
 def start(bot, update):
@@ -249,7 +253,7 @@ def main():
 
 
     conv_handlerAggiornaDispensa = ConversationHandler(
-        entry_points = [CommandHandler('gestisci', aggiorna_dispensa)],
+        entry_points = [CommandHandler('gestisci', aggiorna_dispensa, pass_user_data=True)],
 
         states = {
             AGGIORNA_SELEZIONE: [CallbackQueryHandler(aggiornaProdottiButton, pass_chat_data=True, pass_user_data=True)],
