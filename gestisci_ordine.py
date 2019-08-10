@@ -12,7 +12,7 @@ def lista(bot, update):
     while len(products) > 0:
         row = []
         product = products.pop(0)
-        nome = product.name + ": €" + str(product.price)
+        nome = str(product.quantity) + " - " + product.name + ": €" + str(product.price)
         if len(nome) > 19:
             #row with one product
             row.append(InlineKeyboardButton(nome, callback_data=product.id))
