@@ -175,7 +175,10 @@ def aggiorna_quantita(bot, update, user_data):
 
 
 def aggiorna_nome(bot, update, user_data):
-    update.message.reply_text("Funzione non ancora implementata")
+    old_name = gv.db_manager.getProductName_fromId(user_data['product_id'])
+    new_name = update.message.text
+    gv.db_manager.renameProduct_fromId(user_data['product_id'], new_name)
+    update.message.reply_text("Nome cambiato da %s a %s" % (old_name, new_name))
     return aggiorna_dispensa(bot, update, user_data)
 
 

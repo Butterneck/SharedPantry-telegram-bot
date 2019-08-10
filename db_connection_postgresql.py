@@ -430,3 +430,13 @@ class DB_Connection():
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
+
+    def renameProduct_fromId(self, product_id, newname):
+        if self.existDB():
+            print(intro + self.db_name + '...renameProduct_fromId' + end)
+            self.cleanCursor()
+            self.db.execute('UPDATE Prodotti SET Name = %s WHERE Id = %s;', (newname, product_id))
+            self.connection.commit()
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
+            return None
