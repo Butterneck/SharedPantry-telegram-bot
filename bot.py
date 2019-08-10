@@ -98,24 +98,30 @@ def aggiorna_dispensa(bot, update, user_data):
             return ConversationHandler.END
 
     products = gv.db_manager.getAllProduct()
+    products.sort(key=lambda p: p.name)
     keyboard = []
 
-    for i in range(len(products) // 3):
+    while len(products) > 0:
         row = []
-        for j in range(3):
-            product = products[i * 3 + j]
-            nome = product.name + ": " + str(product.quantity)
+        product = products.pop(0)
+        nome = product.name + ": " + str(product.quantity)
+        if len(nome) > 19:
+            # Row with one product
             row.append(InlineKeyboardButton(nome, callback_data=product.id))
+        else:
+            # Row with two products
+            row.append(InlineKeyboardButton(nome, callback_data=product.id))
+            if len(products) > 1: # Sarebbe >= con solo il > l'ultima riga viene sempre singola (Non cambio perche' mi piace di piu' cosi)
+                product2 = products.pop(0)
+                nome2 = product2.name + ": " + str(product.quantity)
+                if len(nome2) <= 19:
+                    # Il nome del prodotto ha una lunghezza accettabile
+                    row.append(InlineKeyboardButton(nome2, callback_data=product2.id))
+                else:
+                    # Il nome del prodotto non ha una lunghezza accettabile => lo reinserisco in cima
+                    products.insert(0, product2)
 
         keyboard.append(row)
-
-    row = []
-    for i in range(len(products) % 3):
-        product = products[len(products) - i - 1]
-        nome = product.name + ": " + str(product.quantity)
-        row.append(InlineKeyboardButton(nome, callback_data=product.id))
-
-    keyboard.append(row)
 
     keyboard.append([InlineKeyboardButton("aggiungi", callback_data='aggiungi'),InlineKeyboardButton("Termina", callback_data='termina')])
 
