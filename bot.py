@@ -218,6 +218,10 @@ def auth(bot, update, user_data):
 
 
 def help(bot, update):
+    if update.message.chat_id not in gv.chat_id_list:
+        print("Utente " + str(update.message.chat_id) + " non registrato")
+        return
+
     help_message = ("Ciao, ecco i comandi che puoi usare con me:\n\n"
                                     "/prendi - Permette di ottenere la lista di prodotti attualmente disponibili all'acquisto in taverna. Affianco ad ogni prodotto "
                                     "e' scritto il relativo prezzo. Per acquistare un prodotto premi semplicemente sopra di esso, questo verra' aggiunto al tuo conto mensile.\n\n"

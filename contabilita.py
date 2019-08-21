@@ -5,6 +5,10 @@ import globalVariables as gv
 
 def conto(bot, update):
     """Informa l'utente del suo debito con ciano"""
+    if update.message.chat_id not in gv.chat_id_list:
+        print("Utente " + str(update.message.chat_id) + " non registrato")
+        return
+
     acquisti = gv.db_manager.getAcquistiIn(update.message.chat_id, datetime.date.today().replace(day=1), datetime.date.today())
 
     allProducts = gv.db_manager.getAllProduct()

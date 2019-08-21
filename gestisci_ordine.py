@@ -3,6 +3,9 @@ import globalVariables as gv
 
 def lista(bot, update):
     """Crea la tastiera personalizzata e invia il messaggio di presentazione"""
+    if update.message.chat_id not in gv.chat_id_list:
+        print("Utente " + str(update.message.chat_id) + " non registrato")
+        return
 
     products = gv.db_manager.getAllProduct()
     products = list(filter(lambda product: product.quantity > 0, products))

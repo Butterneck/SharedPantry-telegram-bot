@@ -18,6 +18,9 @@ else:
 global db_manager
 db_manager = DB_Connection(DB_URL, name)
 
+global chat_id_list
+chat_id_list = db_manager.getAllChatIds()
+
 
 global nuovoProdotto
 nuovoProdotto = None
