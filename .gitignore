@@ -2,6 +2,9 @@
 geckodriver
 .path_to_geckodriver
 
+#I don't remeamber what it is
+.last_update.id
+
 #cached postgres url in manage
 .postgres_url_cached
 
