@@ -49,6 +49,7 @@ class DB_Connection():
             self.db.execute(init_db)
             self.connection.commit()
 
+
     def __del__(self):
         if self.connection != None:
             self.connection.close()
@@ -57,8 +58,7 @@ class DB_Connection():
     def existDB(self):
         self.cleanCursor()
         try:
-            self.db.execute(
-                "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
+            self.db.execute("SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
             return self.db.fetchone()[0]
         except:
             return False
@@ -298,7 +298,7 @@ class DB_Connection():
         if self.existDB():
             print(terminalColors.WARNING + '[Database]: ' + '... Dropping tables' + end)
             self.cleanCursor()
-            self.db.execute('DROP TABLE IF EXISTS users, prodotti, user_prodotti, debits, activator;')
+            self.db.execute('DROP TABLE IF EXISTS user_prodotti, prodotti, users, debits,  CASCADE')
             self.connection.commit()
             self.db.execute(init_db)
             self.connection.commit()

@@ -4,7 +4,7 @@ from Utils import terminalColors
 
 
 global DB_URL_FOR_TEST
-DB_URL_FOR_TEST= "postgres://fyoqpbctzdznrr:7ea4944c845d3ccc13f21022dff78137d352da194781112fd101d9830e7998ee@ec2-54-75-224-168.eu-west-1.compute.amazonaws.com:5432/d2ig29ct3113ik"
+DB_URL_FOR_TEST= "postgres://ixiqvhfvwxoesq:7a7c7c6514e38c66bf3c730cee009fba2f1f4b2ebe9fd92bf100c84764312ece@ec2-176-34-184-174.eu-west-1.compute.amazonaws.com:5432/dfip2e6s7bg4ik"
 
 DB_URL = ""
 if "DATABASE_URL" in os.environ:
@@ -20,7 +20,7 @@ db_manager = DB_Connection(DB_URL, name)
 
 global chat_id_list
 chat_id_list = db_manager.getAllChatIds()
-
+db_manager.cleanCursor()
 
 global nuovoProdotto
 nuovoProdotto = None
