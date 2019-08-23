@@ -31,7 +31,8 @@ command_completer = WordCompleter(['help',
                                    'drop_all_tables',
                                    'trigger_backup',
                                    'trigger_send_conto',
-                                   'run_query'], ignore_case=True)
+                                   'run_query',
+                                   'conto_mensile'], ignore_case=True)
 
 
 def get_path_to_geckodriver(session):
@@ -60,6 +61,9 @@ def get_pg_url(session):
     heroku_mail = session.prompt("Heroku email: ")
     heroku_password = session.prompt("Heroku password: ", is_password=True)
     heroku_prject_name = session.prompt("Heroku project name: ", is_password=False)
+    db_name = session.prompt("Database name (empty to use Heroku project name): ", is_password=False)
+    if db_name == "":
+        db_name = heroku_prject_name
     heroku_project_index = int(session.prompt("Heroku project index (in dashboard) (index starts from 0): "))
 
     path_to_geckodriver = get_path_to_geckodriver(session)
@@ -67,8 +71,8 @@ def get_pg_url(session):
     try:
         pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver,
                                         heroku_project_index)
-        url_file = open(".postgres_url_cached", "w+")
-        url_file.write(pg_url)
+        url_file = open(".postgres_url_cached", "a")
+        url_file.write(db_name + " " + pg_url + "\n")
         url_file.close()
         print("Url salvato in .postgres_url_cached")
         return pg_url
@@ -370,6 +374,39 @@ def run_query(db_manager, args=[]):
             print(result)
 
 
+def conto_mensile(db_manager, args=[]):
+    users = db_manager.getAllusers()
+    if len(args) == 0:
+        # Calculate 'conto mensile' for all users
+        pass
+    elif args[0] == '-u':
+        # Calculate 'conto mensile' for one user
+        user_chat_id = user_chooice(users, "Conto mensile", "User")
+        acquisti = db_manager.getAcquistiIn(user_chat_id, datetime.date.today().replace(day=1), datetime.date.today())
+
+        allProducts = db_manager.getAllProduct()
+
+        totalPrice = 0
+
+        message = "Items bought this month: \n"
+
+        acquistiSingoli = Utils.removeDuplicateInAcquisti(acquisti)
+        for acquistoSingolo in acquistiSingoli:
+            qt = int(Utils.getNumAcquisti(acquistoSingolo, acquisti))
+            product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
+            partialPrice = int((product[0].price*100)) * qt
+            print(product[0].price, " ", qt)
+            message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice/100) + "\n"
+            totalPrice += partialPrice
+
+        if totalPrice:
+            message = message + "Conto Mensile: €" + str(totalPrice/100)
+            print(message)
+        else:
+            print("User have 0 purchase")
+
+
+
 def print_help():
     print(terminalColors.BOLD + 'Cianobot manage utility help' + terminalColors.ENDC)
     print(terminalColors.UNDERLINE + 'Launch:' + terminalColors.ENDC)
@@ -439,6 +476,12 @@ def print_help():
     print('\trun_query')
     print("\t\t" + terminalColors.BOLD + "Warning - dangerous operation" + terminalColors.ENDC + " Run an arbitrary query in databse")
 
+    print('\tconto_mensile')
+    print("\t\tCalculate 'conto mensile' for all users")
+
+    print('\tconto_mensile -u')
+    print("\t\tCalculate 'conto mensile' for one users")
+
 
 def handle_cmd(cmd, db_manager):
     args = cmd.split(' ')
@@ -473,6 +516,8 @@ def handle_cmd(cmd, db_manager):
         trigger_send_conto(db_manager, args)
     elif cmd == 'run_query':
         run_query(db_manager, args)
+    elif cmd == 'conto_mensile':
+        conto_mensile(db_manager, args)
 
 
 def main():
@@ -482,7 +527,24 @@ def main():
                             auto_suggest=AutoSuggestFromHistory())
 
     if path.exists(".postgres_url_cached"):
-        environ['PG_URL_MANAGE'] = open(".postgres_url_cached", "r").read()
+        urls = open(".postgres_url_cached", "r").read().splitlines()
+        url_selected = urls[0].split(" ")[1]
+
+        if len(urls) > 1:
+            urls_list = []
+            for url in urls:
+                nome = url.split(" ")[0]
+                url_ = url.split(" ")[1]
+                u = (url_, nome)
+                urls_list.append(u)
+
+            url_selected = radiolist_dialog(
+                title="Database",
+                text="Which cached database do you want to use",
+                values=urls_list
+            )
+
+        environ['PG_URL_MANAGE'] = url_selected
 
     if path.exists(".path_to_geckodriver"):
         environ['GECKODRIVER_PATH'] = open(".path_to_geckodriver", "r").read()
