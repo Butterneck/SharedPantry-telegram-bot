@@ -13,15 +13,15 @@ def conto(bot, update):
 
     allProducts = gv.db_manager.getAllProduct()
 
-    totalPrice = 0
+    totalPrice = 0.0
 
     message = "Questo mese hai acquistato dalla taverna le seguenti cose: \n"
 
     acquistiSingoli = removeDuplicateInAcquisti(acquisti)
     for acquistoSingolo in acquistiSingoli:
-        qt = getNumAcquisti(acquistoSingolo, acquisti)
-        product = list(filter(lambda el : el.id == acquistoSingolo.product_id, allProducts))
-        partialPrice = product[0].price * qt
+        qt = int(getNumAcquisti(acquistoSingolo, acquisti))
+        product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
+        partialPrice = float(float(product[0].price) * qt)
         message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice) + "\n"
         totalPrice += partialPrice
 
@@ -44,7 +44,7 @@ def debitoMensile(bot):
 
         allProducts = gv.db_manager.getAllProduct()
 
-        totalPrice = 0
+        totalPrice = 0.0
 
         message = "Ecco il resoconto degli acquiti nella dispensa della taverna del mese appena trascorso: \n"
 
