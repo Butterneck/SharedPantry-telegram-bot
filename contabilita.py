@@ -13,7 +13,7 @@ def conto(bot, update):
 
     allProducts = gv.db_manager.getAllProduct()
 
-    totalPrice = 0.0
+    totalPrice = 0
 
     message = "Questo mese hai acquistato dalla taverna le seguenti cose: \n"
 
@@ -21,12 +21,12 @@ def conto(bot, update):
     for acquistoSingolo in acquistiSingoli:
         qt = int(getNumAcquisti(acquistoSingolo, acquisti))
         product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
-        partialPrice = float(float(product[0].price) * qt)
-        message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice) + "\n"
+        partialPrice = int(product[0].price * 100) * qt
+        message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice/100) + "\n"
         totalPrice += partialPrice
 
     if totalPrice:
-        message = message + "Totale debito: $" + str(totalPrice)
+        message = message + "Totale debito: $" + str(totalPrice/100)
         update.message.reply_text(message)
     else:
         update.message.reply_text("Non hai ancora acquistato niente dalla taverna questo mese")
@@ -44,21 +44,21 @@ def debitoMensile(bot):
 
         allProducts = gv.db_manager.getAllProduct()
 
-        totalPrice = 0.0
+        totalPrice = 0
 
         message = "Ecco il resoconto degli acquiti nella dispensa della taverna del mese appena trascorso: \n"
 
         acquistiSingoli = removeDuplicateInAcquisti(acquisti)
         for acquistoSingolo in acquistiSingoli:
             qt = getNumAcquisti(acquistoSingolo, acquisti)
-            product = list(filter(lambda el : el.id == acquistoSingolo.product_id, allProducts))
-            partialPrice = product[0].price * qt
-            message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice) + "\n"
+            product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
+            partialPrice = int(product[0].price*100) * qt
+            message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice/100) + "\n"
             totalPrice += partialPrice
 
         if totalPrice:
             message = message + "Totale debito: $" + str(totalPrice) + "\nDovrai saldare il debito direttamente con Ciano"
-            messaggio_di_debito = messaggio_di_debito + gv.db_manager.getUsername_fromChatId(chat_id) + ": $" + str(totalPrice) + "\n"
+            messaggio_di_debito = messaggio_di_debito + gv.db_manager.getUsername_fromChatId(chat_id) + ": $" + str(totalPrice/100) + "\n"
 
             bot.send_message(chat_id=chat_id, text=message)
 
