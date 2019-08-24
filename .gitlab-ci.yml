@@ -1,4 +1,4 @@
-image: python:latest
+image: alpine:latest
 
 stages:
     - test
@@ -7,18 +7,26 @@ stages:
 test:
     stage: test
     script:
-    #Setting-up
-    - apt-get update -qy
-    - apt-get install -y python-dev python-pip postgresql
-    - pip install -r requirements.txt
-    #Run tests with
-    - pytest -vv
+        - apk add build-base gcc abuild binutils binutils-doc gcc-doc
+        - apk add libffi
+        - apk add postgresql-libs
+        - apk add musl-dev postgresql-dev
+        - apk add python
+        - apk add python3
+        - apk add python2-dev
+        - apk add python3-dev
+        - apk add libffi-dev
+        - apk add py-pip
+        - pip3 install -r requirements.txt
+        - pip3 install flask
+        #Run Database tests
+        - pytest -vv ./test_db.py
+
 
 deploy:
     stage: deploy
     script:
-        - apt-get update -qy
-        - apt-get install -y ruby-dev
+        - apk add ruby-dev ruby-rdoc
         - gem install dpl
         - dpl --provider=heroku --app=cianobot --api-key=$HEROKU_API_KEY
         - echo "Deployed to Production Server https://t.me/cianostavernabot"
