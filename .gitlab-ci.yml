@@ -26,7 +26,7 @@ test:
 deploy:
     stage: deploy
     script:
-        - apk add ruby-dev ruby-rdoc
+        - apk add ruby-dev ruby-rdoc git
         - gem install dpl
         - dpl --provider=heroku --app=cianobot --api-key=$HEROKU_API_KEY
         - echo "Deployed to Production Server https://t.me/cianostavernabot"
