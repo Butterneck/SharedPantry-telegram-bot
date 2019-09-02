@@ -10,10 +10,13 @@ from prompt_toolkit.shortcuts import input_dialog, radiolist_dialog, yes_no_dial
 from sys import exit, argv
 import urllib3
 from os import environ, path
+import requests
+import json
 
 import Utils
 import datetime
 import calendar
+import locale
 from url_getter import get_pg_url_from_heroku
 from geckodriver_getter import get_geckodriver_binary
 from db_connection_postgresql import *
@@ -378,6 +381,14 @@ def trigger_backup(db_manager, args=[]):
     r = http.request('GET', url_trigger_backup)
     print(r.status)
 
+def send_message(token, chat_id, text):
+    url = "https://api.telegram.org/bot{}/sendMessage?text={}&chat_id={}&parse_mode=markdown".format(token, text, chat_id)
+    r = requests.get(url)
+    response = json.loads(r.text)
+    if response["ok"] == True:
+        print(terminalColors.OKBLUE + "Message sent" + terminalColors.ENDC)
+    else:
+        print(terminalColors.FAIL + "Failed to send message: \n\t" + terminalColors.ENDC + r.text)
 
 def trigger_send_conto(db_manager, args=[]):
     if args[0] == '-r':
@@ -386,6 +397,52 @@ def trigger_send_conto(db_manager, args=[]):
         http = urllib3.PoolManager()
         r = http.request('GET', url_trigger_send_conto)
         print(r.status)
+    if args[0] == '-m':
+        token = prompt("Bot TOKEN: ")
+        month = choose_month("Conto mensile", "Month")
+        locale.setlocale(locale.LC_ALL, 'it_IT')
+        month_name = calendar.month_name[month]
+        last_day = calendar.monthrange(datetime.date.today().year, month)[1]
+        if datetime.date.today().month == month and datetime.date.today().day < last_day:
+            print("Funzione chiamata prima della fine del mese")
+            last_day = datetime.date.today().day
+        if datetime.date.today().month < month:
+            print("Mese non ancora raggiunto")
+            return
+
+        chat_ids = db_manager.getAllChatIds()
+        messaggio_di_debito = "Ecco chi ha acquistato dalla taverna nel mese di {}:\n".format(month_name)
+
+        for chat_id in chat_ids:
+            acquisti = db_manager.getAcquistiIn(chat_id, datetime.date.today().replace(day=1, month=month),
+                                                datetime.date.today().replace(day=last_day, month=month))
+
+            allProducts = db_manager.getAllProduct()
+
+            totalPrice = 0
+
+            message = "Ecco il resoconto degli acquiti nella dispensa della taverna del mese di {}: \n".format(month_name)
+
+            acquistiSingoli = Utils.removeDuplicateInAcquisti(acquisti)
+            for acquistoSingolo in acquistiSingoli:
+                qt = Utils.getNumAcquisti(acquistoSingolo, acquisti)
+                product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
+                partialPrice = int(product[0].price * 100) * qt
+                message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice / 100) + "\n"
+                totalPrice += partialPrice
+
+            if totalPrice:
+                message = message + "\n*Totale debito: $" + str(
+                    totalPrice/100) + "*\nDovrai saldare il debito direttamente con Ciano."
+                message = message + "\nIn caso di suggerimenti, dubbi o perplessità non esitare a contattarci."
+                messaggio_di_debito = messaggio_di_debito + db_manager.getUsername_fromChatId(chat_id) + ": €" + str(
+                    totalPrice / 100) + "\n"
+
+                send_message(token=token, chat_id=chat_id, text=message)
+
+        send_message(token=token, chat_id=32345162, text=messaggio_di_debito) #Filippo
+        send_message(token=token, chat_id=179624122, text=messaggio_di_debito) #Marco
+        send_message(token=token, chat_id=879140791, text=messaggio_di_debito) #Ciano
 
 
 def run_query(db_manager, args=[]):
@@ -428,6 +485,8 @@ def conto_mensile(db_manager, args=[]):
             print("User have 0 purchase")
     elif args[0] == '-m':
         month = choose_month("Conto mensile", "Month")
+        locale.setlocale(locale.LC_ALL, 'it_IT')
+        month_name = calendar.month_name[month]
         last_day = calendar.monthrange(datetime.date.today().year, month)[1]
         conto_messages = []
         for user in users:
@@ -440,7 +499,7 @@ def conto_mensile(db_manager, args=[]):
 
             totalPrice = 0
 
-            #message = "Items bought this month: \n"
+            message = "Prodotti acqusitati nel mese di {}: \n".format(month_name)
 
             acquistiSingoli = Utils.removeDuplicateInAcquisti(acquisti)
             for acquistoSingolo in acquistiSingoli:
@@ -448,7 +507,7 @@ def conto_mensile(db_manager, args=[]):
                 product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
                 partialPrice = int((product[0].price * 100)) * qt
                 #print(product[0].price, " ", qt)
-                #message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice / 100) + "\n"
+                message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice / 100) + "\n"
                 totalPrice += partialPrice
 
             if totalPrice:

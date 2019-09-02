@@ -105,3 +105,4 @@ def dbBackup():
         sh.pg_dump('-h', host, '-U', user, db, '-p', port, _out=f)
 
     dropboxUpload('backup.gz')
+
