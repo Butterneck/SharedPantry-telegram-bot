@@ -13,6 +13,7 @@ from os import environ, path
 
 import Utils
 import datetime
+import calendar
 from url_getter import get_pg_url_from_heroku
 from geckodriver_getter import get_geckodriver_binary
 from db_connection_postgresql import *
@@ -230,6 +231,27 @@ def product_chooice(products, title, text):
     return choose_product
 
 
+def choose_month(title, text):
+    month_list = [(1, "Genuary"),
+                  (2, "February"),
+                  (3, "March"),
+                  (4, "April"),
+                  (5, "May"),
+                  (6, "June"),
+                  (7, "July"),
+                  (8, "August"),
+                  (9, "September"),
+                  (10, "October"),
+                  (11, "November"),
+                  (12, "December")]
+    choose_month = radiolist_dialog(
+        title= title,
+        text= text,
+        values= month_list
+    )
+
+    return choose_month
+
 # restituisce l'id della transazione selezionata
 def transaction_chooice(transactions, products, title, text):
     if len(transactions) == 0:
@@ -404,6 +426,40 @@ def conto_mensile(db_manager, args=[]):
             print(message)
         else:
             print("User have 0 purchase")
+    elif args[0] == '-m':
+        month = choose_month("Conto mensile", "Month")
+        last_day = calendar.monthrange(datetime.date.today().year, month)[1]
+        conto_messages = []
+        for user in users:
+
+            user_chat_id = user.chat_id
+            acquisti = db_manager.getAcquistiIn(user_chat_id, datetime.date.today().replace(day=1, month=month),
+                                                datetime.date.today().replace(day=last_day, month=month))
+
+            allProducts = db_manager.getAllProduct()
+
+            totalPrice = 0
+
+            #message = "Items bought this month: \n"
+
+            acquistiSingoli = Utils.removeDuplicateInAcquisti(acquisti)
+            for acquistoSingolo in acquistiSingoli:
+                qt = int(Utils.getNumAcquisti(acquistoSingolo, acquisti))
+                product = list(filter(lambda el: el.id == acquistoSingolo.product_id, allProducts))
+                partialPrice = int((product[0].price * 100)) * qt
+                #print(product[0].price, " ", qt)
+                #message = message + product[0].name + " x" + str(qt) + " = €" + str(partialPrice / 100) + "\n"
+                totalPrice += partialPrice
+
+            if totalPrice:
+                message = user.nome + ": €" + str(totalPrice / 100)
+                conto_messages.append(message)
+                #print(message)
+            else:
+                pass
+                #print("User have 0 purchase")
+        for conto_message in conto_messages:
+            print(conto_message)
 
 
 
