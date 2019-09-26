@@ -25,7 +25,7 @@ def lista(bot, update):
             if len(products) > 1: # Sarebbe >= con solo il > l'ultima riga viene sempre singola (Non cambio perche' mi piace di piu' cosi)
                 #c'è almeno un altro prodotto
                 product2 = products.pop(0)
-                nome2 = product2.name + ": €" + str(product2.price)
+                nome2 = str(product2.quantity) + " - " + product2.name + ": €" + str(product2.price)
                 if len(nome2) <= 19:
                     #il nome del prodotto ha una lunghezza accettabile
                     row.append(InlineKeyboardButton(nome2, callback_data=product.id))
