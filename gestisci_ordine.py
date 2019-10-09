@@ -28,7 +28,7 @@ def lista(bot, update):
                 nome2 = str(product2.quantity) + " - " + product2.name + ": €" + str(product2.price)
                 if len(nome2) <= 19:
                     #il nome del prodotto ha una lunghezza accettabile
-                    row.append(InlineKeyboardButton(nome2, callback_data=product.id))
+                    row.append(InlineKeyboardButton(nome2, callback_data=product2.id))
                 else:
                     #il nome del prodotto non ha un alunghezza accettabile => lo reiserisco in cima
                     products.insert(0, product2)
