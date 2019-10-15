@@ -199,6 +199,7 @@ def start(bot, update):
 
 def auth(bot, update, user_data):
     if (update.message.text == "Bordello") :
+        gv.chat_id_list.append(str(update.message.chat_id))
         update.message.reply_text("taverna sbloccata " + unlock + "Benvenuto, usa il comando /prendi per selezionare cosa hai preso dalla dispensa" + yum)
         user = update.message.from_user
         if user.first_name and user.last_name:
