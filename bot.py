@@ -113,7 +113,7 @@ def aggiorna_dispensa(bot, update, user_data):
             row.append(InlineKeyboardButton(nome, callback_data=product.id))
             if len(products) > 1: # Sarebbe >= con solo il > l'ultima riga viene sempre singola (Non cambio perche' mi piace di piu' cosi)
                 product2 = products.pop(0)
-                nome2 = product2.name + ": " + str(product.quantity)
+                nome2 = product2.name + ": " + str(product2.quantity)
                 if len(nome2) <= 19:
                     # Il nome del prodotto ha una lunghezza accettabile
                     row.append(InlineKeyboardButton(nome2, callback_data=product2.id))
