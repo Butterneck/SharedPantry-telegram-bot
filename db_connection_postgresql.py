@@ -440,3 +440,14 @@ class DB_Connection():
         else:
             print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
             return None
+
+    def change_username(self, chat_id, new_username):
+        if self.existDB():
+            print(intro + self.db_name + '...change_username' + end)
+            self.cleanCursor()
+            self.db.execute('UPDATE Users SET Username = %s WHERE Chat_Id = %s', (new_username, chat_id))
+            self.connection.commit()
+            return True
+        else:
+            print(terminalColors.FAIL + '[Error]-[Database]: ' + ' not found' + end)
+            return False

@@ -36,7 +36,8 @@ command_completer = WordCompleter(['help',
                                    'trigger_backup',
                                    'trigger_send_conto',
                                    'run_query',
-                                   'conto_mensile'], ignore_case=True)
+                                   'conto_mensile',
+                                   'change_username'], ignore_case=True)
 
 
 def get_path_to_geckodriver(session):
@@ -521,6 +522,16 @@ def conto_mensile(db_manager, args=[]):
             print(conto_message)
 
 
+def change_username(db_manager, args):
+    users = db_manager.getAllusers()
+    chat_id = user_chooice(users, "Change Username", "Choose user which username will be changed")
+    new_username = input_dialog(
+        title="Change Username",
+        text="Which is the new username?"
+    )
+
+    print("done") if db_manager.change_username(chat_id, new_username) else "Not changed"
+
 
 def print_help():
     print(terminalColors.BOLD + 'Cianobot manage utility help' + terminalColors.ENDC)
@@ -633,6 +644,8 @@ def handle_cmd(cmd, db_manager):
         run_query(db_manager, args)
     elif cmd == 'conto_mensile':
         conto_mensile(db_manager, args)
+    elif cmd == 'change_username':
+        change_username(db_manager, args)
 
 
 def main():
