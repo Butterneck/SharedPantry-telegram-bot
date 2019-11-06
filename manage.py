@@ -658,6 +658,10 @@ def main():
         urls = open(".postgres_url_cached", "r").read().splitlines()
         url_selected = urls[0].split(" ")[1]
 
+    if path.exists(".path_to_geckodriver"):
+        environ['GECKODRIVER_PATH'] = open(".path_to_geckodriver", "r").read()
+
+    if len(argv) == 1:
         if len(urls) > 1:
             urls_list = []
             for url in urls:
@@ -671,15 +675,14 @@ def main():
                 text="Which cached database do you want to use",
                 values=urls_list
             )
+        else:
+            print("Aggiungere un nuvo url con ./manage.py --new-pg-url")
 
         environ['PG_URL_MANAGE'] = url_selected
 
-    if path.exists(".path_to_geckodriver"):
-        environ['GECKODRIVER_PATH'] = open(".path_to_geckodriver", "r").read()
-
-    if len(argv) == 1:
         db_manager = get_db_connection(session)
     elif argv[1] == '--new-pg-url':
+        print("getting new pg url")
         db_manager = DB_Connection(get_pg_url(session))
     elif argv[1] == '--help':
         print_help()
