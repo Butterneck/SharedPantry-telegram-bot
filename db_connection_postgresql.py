@@ -334,7 +334,7 @@ class DB_Connection():
             self.db.execute('SELECT * FROM Activator')
             if len(self.db.fetchall()) == 0:
                 print(intro + self.db_name + '...createActivatorRow' + end)
-                self.db.execute('INSERT INTO Activator(activator) VALUES(1)')
+                self.db.execute('INSERT INTO Activator(activator) VALUES(0, 1)')
                 self.connection.commit()
 
             self.db.execute('SELECT Activator FROM Activator')
