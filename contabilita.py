@@ -57,7 +57,7 @@ def debitoMensile(bot):
             totalPrice += partialPrice
 
         if totalPrice:
-            message = message + "Totale debito: $" + str(totalPrice) + "\nDovrai saldare il debito direttamente con Ciano"
+            message = message + "Totale debito: $" + str(totalPrice/100) + "\nDovrai saldare il debito direttamente con Ciano"
             messaggio_di_debito = messaggio_di_debito + gv.db_manager.getUsername_fromChatId(chat_id) + ": $" + str(totalPrice/100) + "\n"
 
             bot.send_message(chat_id=chat_id, text=message)
