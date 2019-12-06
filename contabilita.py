@@ -37,16 +37,24 @@ def debitoMensile(bot):
     messaggio_di_debito = "Ecco chi ha acquistato dalla taverna questo mese:\n"
 
     for chat_id in chat_ids:
-        # datetime.date.today().replace(day=1).replace(month=datetime.date.today().month - 1) Dovrebbe ritornare il primo giorno del mese precedente
-        # datetime.date.today() - timedelta(days=1) Dovrebbe ritornare il giorno precedente ad oggi, per cui assumendo che la funzione debitoMensile venga eseguita
-        # solamente il primo giorno del mese all'incirca alle 00:00, allora il giorno ritornato dovrebbe essere l'ultimo giorno del mese precedente
-        acquisti = gv.db_manager.getAcquistiIn(chat_id, datetime.date.today().replace(day=1).replace(month=datetime.date.today().month - 1), datetime.date.today() - datetime.timedelta(days=1))
+        # Check that it's the first day of the month
+        if datetime.date.today().day != 1:
+            print("Oggi non e' il primo giorno del mese, perche' si sta cercando di inviare il conto mensile?")
+
+        mesePrecedente = gv.mesiAnno[datetime.date.today().month - 1].getMesePrecedente()
+        annoMesePrecedente = datetime.date.today().year - 1 if mesePrecedente.numMese == 12 else datetime.date.today().year
+
+        # Check anno bisestile
+        if mesePrecedente.numMese == 2 and not ((annoMesePrecedente - 2000) % 4):
+            mesePrecedente.numGiorni = mesePrecedente.getNumGiorni() + 1
+
+        acquisti = gv.db_manager.getAcquistiIn(chat_id, datetime.date(annoMesePrecedente, mesePrecedente.getNumMese(), 1), datetime.date(annoMesePrecedente, mesePrecedente.getNumMese(), mesePrecedente.getNumGiorni()))
 
         allProducts = gv.db_manager.getAllProduct()
 
         totalPrice = 0
 
-        message = "Ecco il resoconto degli acquiti nella dispensa della taverna del mese appena trascorso: \n"
+        message = "Ecco il resoconto degli acquiti nella dispensa della taverna del mese di " + mesePrecedente.nome + ": \n"
 
         acquistiSingoli = removeDuplicateInAcquisti(acquisti)
         for acquistoSingolo in acquistiSingoli:

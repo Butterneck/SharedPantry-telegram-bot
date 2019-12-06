@@ -106,3 +106,22 @@ def dbBackup():
 
     dropboxUpload('backup.gz')
 
+
+class Mese:
+    def __init__(self, nome, numMese, numGiorni, mesePrecedente=None):
+        self.nome = nome
+        self.numMese = numMese
+        self.numGiorni = numGiorni
+        self.mesePrecedente = mesePrecedente
+    
+    def getMesePrecedente(self):
+        return self.mesePrecedente
+    
+    def getNumGiorni(self):
+        return self.numGiorni
+    
+    def getNumMese(self):
+        return self.numMese
+
+    def getNome(self):
+        return self.nome

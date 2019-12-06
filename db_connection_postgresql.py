@@ -283,7 +283,7 @@ class DB_Connection():
     def getAllusers(self):
         if self.existDB():
             utenti = []
-            print(intro + self.db_name + '...getAcquistiIn' + end)
+            print(intro + self.db_name + '...getAllUsers' + end)
             self.cleanCursor()
             self.db.execute('SELECT * FROM Users')
             query = self.db.fetchall()
