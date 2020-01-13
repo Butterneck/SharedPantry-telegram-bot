@@ -1,17 +1,11 @@
-from os import path
-import sqlite3
 from Utils import *
 import datetime
 import psycopg2
-import os
 from sys import exit
 
-from User import *
-from User_Prodotti import *
-from Prodotti import *
-from Debiti import Debit
-from Activator import Activator
-from Backup import Backup
+from User import User
+from User_Prodotti import User_Prodotti
+from Prodotti import Product
 
 init_db = open("dispensa.sql").read()
 
@@ -40,7 +34,7 @@ class DB_Connection():
 
         self.db = self.connection.cursor()
         self.db.execute(
-            "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
+            "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
         if self.db.fetchone()[0]:
             print(intro + self.db_name + ' already exists' + end)
         else:
@@ -58,7 +52,7 @@ class DB_Connection():
     def existDB(self):
         self.cleanCursor()
         try:
-            self.db.execute("SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'schema_name'   AND    table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
+            self.db.execute("SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE     table_name = 'users' OR table_name='user_prodotti' OR table_name='prodotti' OR table_name='debits' OR table_name='activator' OR table_name='backup');")
             return self.db.fetchone()[0]
         except:
             return False
