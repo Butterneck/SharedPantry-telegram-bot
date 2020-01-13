@@ -30,7 +30,6 @@ import globalVariables as gv
 
 # Funzioni ausiliarie
 from gestisci_ordine import lista, button
-from contabilita import conto
 
 def aggiungi_prodotto(bot, update):
     update.message.reply_text("Ok, dimmi il nome del prodotto che vuoi aggiungere")
