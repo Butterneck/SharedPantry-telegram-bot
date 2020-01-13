@@ -17,26 +17,6 @@ class terminalColors:
     UNDERLINE = '\033[4m'
     ITALIC = '\033[3m'
 
-
-class Mese:
-    def __init__(self, nome, numMese, numGiorni, mesePrecedente=None):
-        self.nome = nome
-        self.numMese = numMese
-        self.numGiorni = numGiorni
-        self.mesePrecedente = mesePrecedente
-
-    def getMesePrecedente(self):
-        return self.mesePrecedente
-
-    def getNumGiorni(self):
-        return self.numGiorni
-
-    def getNumMese(self):
-        return self.numMese
-
-    def getNome(self):
-        return self.nome
-
 import globalVariables as gv
 
 def datetime_to_integer(dt_time):
