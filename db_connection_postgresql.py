@@ -323,14 +323,7 @@ class DB_Connection():
     def checkActivator(self):
         if self.existDB():
             print(intro + self.db_name + '...checkActivator' + end)
-
             self.cleanCursor()
-            self.db.execute('SELECT * FROM Activator')
-            if len(self.db.fetchall()) == 0:
-                print(intro + self.db_name + '...createActivatorRow' + end)
-                self.db.execute('INSERT INTO Activator(activator) VALUES(1)')
-                self.connection.commit()
-
             self.db.execute('SELECT Activator FROM Activator')
             if self.db.fetchone()[0]:
                 print(intro + self.db_name + ' activator activated' + end)
@@ -340,8 +333,6 @@ class DB_Connection():
             return False
         else:
             print(intro + self.db_name + ' not found' + end)
-            print(intro + self.db_name + ' initializing activator' + end)
-            self.deactivateActivator()
             return False
 
     def checkTransaction_forProducts(self, product_id):
@@ -379,12 +370,6 @@ class DB_Connection():
         if self.existDB():
             print(intro + self.db_name + '...checkBackup' + end)
             self.cleanCursor()
-            self.db.execute('SELECT * FROM Backup')
-            if len(self.db.fetchall()) == 0:
-                print(intro + self.db_name + '...createBackupRow' + end)
-                self.db.execute('INSERT INTO Backup(backup) VALUES(1)')
-                self.connection.commit()
-
             self.db.execute('SELECT Backup FROM Backup')
             if self.db.fetchone()[0]:
                 print(intro + self.db_name + ' backup activated' + end)
@@ -394,8 +379,6 @@ class DB_Connection():
             return False
         else:
             print(intro + self.db_name + ' not found' + end)
-            print(intro + self.db_name + ' initializing backup' + end)
-            self.deactivateBackup()
             return False
 
     def cleanCursor(self):
