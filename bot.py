@@ -7,6 +7,7 @@ import os
 from CheckActivatorThread import CheckActivatorThread
 from CheckBackupThread import CheckBackupThread
 from Utils import terminalColors
+from db_connection_postgresql import DB_Connection
 
 
 lock = emojize(":lock:", use_aliases=True)
@@ -243,6 +244,18 @@ def main():
     updater = Updater(TOKEN)
     PORT = int(os.environ.get('PORT', '8443'))
     bot = telegram.Bot(TOKEN)
+
+    DB_URL = ""
+    if "DATABASE_URL" in os.environ:
+        DB_URL = os.environ["DATABASE_URL"]
+        sslRequired = True
+        name = "Prod_DB"
+    else:
+        print(terminalColors.WARNING + "TEST mode" + terminalColors.ENDC)
+        DB_URL = "postgres://" + os.environ['USERNAME'] + "@localhsot/tavernacianobot"
+        sslRequired = False
+        name = "Test_DB"
+    db_manager = DB_Connection(DB_URL, sslRequired, name)
 
     # Inizializzo il thread per il check del contomensile
     checkActivator = CheckActivatorThread(bot)
