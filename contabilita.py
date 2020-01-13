@@ -1,7 +1,7 @@
 import datetime
 from Utils import removeDuplicateInAcquisti, getNumAcquisti
 from authenticator import Authenticator
-from Anno import Anno, Mese
+from Anno import Anno
 
 
 class Wallet():

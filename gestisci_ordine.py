@@ -1,13 +1,12 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-import globalVariables as gv
+from authenticator import Authenticator
 
-def lista(bot, update):
+def lista(bot, update, db_manager):
     """Crea la tastiera personalizzata e invia il messaggio di presentazione"""
-    if update.message.chat_id not in gv.chat_id_list:
-        print("Utente " + str(update.message.chat_id) + " non registrato")
+    if not Authenticator().checkAuthentication(update):
         return
 
-    products = gv.db_manager.getAllProduct()
+    products = db_manager.getAllProduct()
     products = list(filter(lambda product: product.quantity > 0, products))
     products.sort(key=lambda p: p.name)
     keyboard = []
@@ -45,14 +44,14 @@ def lista(bot, update):
         update.message.reply_text("Al momento la taverna non ha nulla da offrirti, torna piu' tardi")
 
 
-def button(bot, update, chat_data):
+def button(bot, update, chat_data, db_manager):
     """Gestisce la callback del prodotto scelto"""
     data = update.callback_query
     if data.data == 'annullaOrdine':
         data.edit_message_text(text="Annullato correttamente")
         return
     try:
-        gv.db_manager.addTransaction(int(update.callback_query.message.chat_id), int(data.data), 1)
+        db_manager.addTransaction(int(update.callback_query.message.chat_id), int(data.data), 1)
         data.edit_message_text(text="Ottimo, torna presto a trovarci!")
     except:
         data.edit_message_text(text="Mi spiace, arrivi tardi, e' finito")

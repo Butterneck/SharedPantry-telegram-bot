@@ -4,14 +4,15 @@ import time
 from Utils import dbBackup, dropboxUpload, removeOldBackups
 
 class CheckBackupThread(Thread):
-    def __init__(self):
+    def __init__(self, db_manager):
         '''Constructor'''
         Thread.__init__(self)
+        self.db_manager = db_manager
 
     def run(self):
         while True:
             if gv.db_manager.checkBackup():
                 dbBackup()
-                gv.db_manager.deactivateBackup()
+                self.db_manager.deactivateBackup()
                 return
             time.sleep(3)
