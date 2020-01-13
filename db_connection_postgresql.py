@@ -25,12 +25,12 @@ def print_DB_unreachable(db_name):
 
 class DB_Connection():
 
-    def __init__(self, DB_URL, db_name="Default"):
+    def __init__(self, DB_URL, sslRequired, db_name="Default"):
         self.path = DB_URL
         self.db_name = db_name
         self.connection = None
         try:
-            self.connection = psycopg2.connect(DB_URL, sslmode='require')
+            self.connection = psycopg2.connect(DB_URL, sslmode='require') if sslRequired else psycopg2.connect(DB_URL)
         except psycopg2.OperationalError as e:
             print(terminalColors.FAIL + "Database " + self.db_name + " not reachable." + terminalColors.ENDC)
             print(terminalColors.FAIL + "Exit" + terminalColors.ENDC)
