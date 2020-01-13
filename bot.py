@@ -8,6 +8,7 @@ from CheckActivatorThread import CheckActivatorThread
 from CheckBackupThread import CheckBackupThread
 from Utils import terminalColors
 from db_connection_postgresql import DB_Connection
+from contabilita import Wallet
 
 
 lock = emojize(":lock:", use_aliases=True)
@@ -298,7 +299,7 @@ def main():
     dp.add_handler(conv_handlerAggiornaDispensa)
     dp.add_handler(CommandHandler('prendi', lista))
     dp.add_handler(CallbackQueryHandler(button, pass_chat_data=True))
-    dp.add_handler(CommandHandler('conto', conto))
+    dp.add_handler(CommandHandler('conto', Wallet().sendConto(updater, db_manager)))
     dp.add_handler(CommandHandler('help', help))
 
 

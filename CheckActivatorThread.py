@@ -1,6 +1,6 @@
 from threading import Thread
 import globalVariables as gv
-from contabilita import debitoMensile
+from contabilita import Wallet
 import time
 
 class CheckActivatorThread(Thread):
@@ -12,7 +12,7 @@ class CheckActivatorThread(Thread):
     def run(self):
         while True:
             if gv.db_manager.checkActivator():  # Check the value of activator
-                debitoMensile(self.bot)
+                Wallet.sedDebitoMensile(self.bot)
                 gv.db_manager.deactivateActivator() # reset activator value
                 return
             time.sleep(3)
