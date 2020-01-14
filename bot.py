@@ -180,7 +180,7 @@ def aggiorna_quantita(bot, update, user_data, db_manager):
     return aggiorna_dispensa(bot, update, user_data)
 
 
-def aggiorna_nome(bot, update, user_data):
+def aggiorna_nome(bot, update, user_data, db_manager):
     old_name = db_manager.getProductName_fromId(user_data['product_id'])
     new_name = update.message.text
     db_manager.renameProduct_fromId(user_data['product_id'], new_name)
@@ -199,7 +199,6 @@ def start(bot, update, db_manager):
 
 def auth(bot, update, user_data, db_manager):
     if (update.message.text == "Bordello") :
-        chat_id_list.append(str(update.message.chat_id))
         update.message.reply_text("taverna sbloccata " + unlock + "Benvenuto, usa il comando /prendi per selezionare cosa hai preso dalla dispensa" + yum)
         user = update.message.from_user
         if user.first_name and user.last_name:
@@ -250,9 +249,10 @@ def main():
         name = "Prod_DB"
     else:
         print(terminalColors.WARNING + "TEST mode" + terminalColors.ENDC)
-        DB_URL = "postgres://" + os.environ['USERNAME'] + "@localhsot/tavernacianobot"
+        DB_URL = "postgres://" + os.environ['USER'] + "@localhost/tavernacianobot"
         sslRequired = False
         name = "Test_DB"
+        print(DB_URL)
     db_manager = DB_Connection(DB_URL, sslRequired, name)
 
     # Inizializzo il thread per il check del contomensile
@@ -267,10 +267,10 @@ def main():
 
 
     conv_handlerStart = ConversationHandler(
-        entry_points = [CommandHandler('start', partial(start, db_manager))],
+        entry_points = [CommandHandler('start', partial(start, db_manager=db_manager))],
 
         states = {
-            AUTH: [MessageHandler(Filters.text, auth, pass_user_data=True)]
+            AUTH: [MessageHandler(Filters.text, partial(auth, db_manager=db_manager), pass_user_data=True)]
         },
 
         fallbacks = [CommandHandler('fatto', done, pass_user_data=True)]
@@ -278,15 +278,15 @@ def main():
 
 
     conv_handlerAggiornaDispensa = ConversationHandler(
-        entry_points = [CommandHandler('gestisci', partial(aggiorna_dispensa, db_manager), pass_user_data=True)],
+        entry_points = [CommandHandler('gestisci', partial(aggiorna_dispensa, db_manager=db_manager), pass_user_data=True)],
 
         states = {
-            AGGIORNA_SELEZIONE: [CallbackQueryHandler(partial(aggiornaProdottiButton, db_manager), pass_chat_data=True, pass_user_data=True)],
-            AGGIORNA_QUANTITA: [MessageHandler(Filters.text, partial(aggiorna_quantita, db_manager), pass_user_data=True)],
-            AGGIORNA_NOME: [MessageHandler(Filters.text, partial(aggiorna_nome, db_manager), pass_user_data=True)],
+            AGGIORNA_SELEZIONE: [CallbackQueryHandler(partial(aggiornaProdottiButton, db_manager=db_manager), pass_chat_data=True, pass_user_data=True)],
+            AGGIORNA_QUANTITA: [MessageHandler(Filters.text, partial(aggiorna_quantita, db_manager=db_manager), pass_user_data=True)],
+            AGGIORNA_NOME: [MessageHandler(Filters.text, partial(aggiorna_nome, db_manager=db_manager), pass_user_data=True)],
             NOME: [MessageHandler(Filters.text, aggiungi_nome, pass_user_data=True)],
             PREZZO: [MessageHandler(Filters.text, aggiungi_prezzo, pass_user_data=True)],
-            QUANTITA: [MessageHandler(Filters.text, partial(aggiungi_quantita, db_manager), pass_user_data=True)]
+            QUANTITA: [MessageHandler(Filters.text, partial(aggiungi_quantita, db_manager=db_manager), pass_user_data=True)]
         },
 
         fallbacks = [CommandHandler('fatto', done, pass_user_data=True)]
@@ -294,10 +294,10 @@ def main():
 
     dp.add_handler(conv_handlerStart)
     dp.add_handler(conv_handlerAggiornaDispensa)
-    dp.add_handler(CommandHandler('prendi', partial(lista, db_manager)))
-    dp.add_handler(CallbackQueryHandler(partial(button, db_manager), pass_chat_data=True))
-    dp.add_handler(CommandHandler('conto', Wallet().sendConto(updater, db_manager)))
-    dp.add_handler(CommandHandler('help', partial(help, db_manager)))
+    dp.add_handler(CommandHandler('prendi', partial(lista, db_manager=db_manager)))
+    dp.add_handler(CallbackQueryHandler(partial(button, db_manager=db_manager), pass_chat_data=True))
+    dp.add_handler(CommandHandler('conto', partial(Wallet().sendConto, db_manager=db_manager)))
+    dp.add_handler(CommandHandler('help', help))
 
 
     if "HEROKU" in os.environ:

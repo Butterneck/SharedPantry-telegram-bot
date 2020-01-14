@@ -19,7 +19,7 @@ class Mese:
 
 
 class Anno:
-    anno = None
+    anno = []
 
     def __init__(self):
         self.anno.append(Mese('Gennaio', 1, 31))

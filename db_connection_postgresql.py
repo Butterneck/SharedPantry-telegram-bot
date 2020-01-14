@@ -325,7 +325,8 @@ class DB_Connection():
             print(intro + self.db_name + '...checkActivator' + end)
             self.cleanCursor()
             self.db.execute('SELECT Activator FROM Activator')
-            if self.db.fetchone()[0]:
+            a = self.db.fetchone()[0]
+            if a:
                 print(intro + self.db_name + ' activator activated' + end)
                 print('Done')
                 return True
@@ -371,7 +372,8 @@ class DB_Connection():
             print(intro + self.db_name + '...checkBackup' + end)
             self.cleanCursor()
             self.db.execute('SELECT Backup FROM Backup')
-            if self.db.fetchone()[0]:
+            a = self.db.fetchone()[0]
+            if a:
                 print(intro + self.db_name + ' backup activated' + end)
                 print('Done')
                 return True

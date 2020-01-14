@@ -29,7 +29,7 @@ class Wallet():
             return "Non hai acquistato niente dalla taverna questo mese"
 
 
-    def sendConto(self, update, db_manager):
+    def sendConto(self, bot, update, db_manager):
         """
             Informa l'utente del debito con Ciano
         """

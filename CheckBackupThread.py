@@ -11,7 +11,7 @@ class CheckBackupThread(Thread):
 
     def run(self):
         while True:
-            if gv.db_manager.checkBackup():
+            if self.db_manager.checkBackup():
                 dbBackup()
                 self.db_manager.deactivateBackup()
                 return

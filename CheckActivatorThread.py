@@ -13,7 +13,7 @@ class CheckActivatorThread(Thread):
     def run(self):
         while True:
             if self.db_manager.checkActivator():  # Check the value of activator
-                Wallet.sedDebitoMensile(self.bot)
+                Wallet().sendDebitoMensile(self.bot, self.db_manager)
                 self.db_manager.deactivateActivator() # reset activator value
                 return
             time.sleep(3)

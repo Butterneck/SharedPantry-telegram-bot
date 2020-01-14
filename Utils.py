@@ -89,14 +89,24 @@ def dropboxUpload(LOCALFILE):
                 return
 
 def dbBackup():
-    url = gv.DB_URL
-    list = url.split('/')[2:]
-    user = list[0].split(':')[0]
-    port = list[0].split(':')[2]
-    host = list[0].split('@')[1].split(':')[0]
-    password = list[0].split(':')[1].split('@')[0]
-    db = list[1]
-    print(user + port + host + password, sep="\t")
+    if "DATABASE_URL" in os.environ:
+        DB_URL = os.environ["DATABASE_URL"]
+        url = DB_URL
+        list = url.split('/')[2:]
+        user = list[0].split(':')[0]
+        port = list[0].split(':')[2]
+        host = list[0].split('@')[1].split(':')[0]
+        password = list[0].split(':')[1].split('@')[0]
+        db = list[1]
+        print(user + port + host + password, sep="\t")
+    else:
+        user = os.environ['USER']
+        port = 5432
+        db = 'tavernacianobot'
+        host = 'localhost'
+        password = ''
+
+
 
 
     os.environ["PGPASSWORD"] = password
