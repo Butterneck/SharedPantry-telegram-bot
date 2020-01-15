@@ -7,19 +7,18 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit import print_formatted_text, HTML
 from prompt_toolkit.shortcuts import input_dialog, radiolist_dialog, yes_no_dialog
-from sys import exit, argv
+from sys import argv
 import urllib3
 from os import environ, path
 import requests
 import json
 
 import Utils
-import datetime
 import calendar
 import locale
-from url_getter import get_pg_url_from_heroku
-from geckodriver_getter import get_geckodriver_binary
-from db_connection_postgresql import *
+from src.Utils.Scripts.url_getter import get_pg_url_from_heroku
+from src.Utils.Scripts.geckodriver_getter import get_geckodriver_binary
+from src.DB.DBManager.db_connection_postgresql import *
 
 command_completer = WordCompleter(['help',
                                    'list_products',
@@ -47,13 +46,13 @@ def get_path_to_geckodriver(session):
             # Dowload geckodriver in ./geckdriver
             print(terminalColors.ITALIC + "Download geckodriver in this directory" + terminalColors.ENDC)
             print(terminalColors.WARNING + "You need also Firefox to get postgresql databse url from Heroku" + terminalColors.ENDC)
-            path_to_geckodriver = "./geckodriver"
+            path_to_geckodriver = ".config/Geckodriver/geckodriver"
 
         if not get_geckodriver_binary(path_to_geckodriver):
             print(terminalColors.FAIL + "Daownload of geckodriver failed" + terminalColors.ENDC)
             exit(1)
 
-        url_file = open(".path_to_geckodriver", "w+")
+        url_file = open(".config/Geckodriver/.path_to_geckodriver", "w+")
         url_file.write(path_to_geckodriver)
         url_file.close()
         print("Path salvata in .path_to_geckodriver")
@@ -76,7 +75,7 @@ def get_pg_url(session):
     try:
         pg_url = get_pg_url_from_heroku(heroku_mail, heroku_password, heroku_prject_name, path_to_geckodriver,
                                         heroku_project_index)
-        url_file = open(".postgres_url_cached", "a")
+        url_file = open(".config/Manage/.postgres_url_cached", "a")
         url_file.write(db_name + " " + pg_url + "\n")
         url_file.close()
         print("Url salvato in .postgres_url_cached")
@@ -651,15 +650,15 @@ def handle_cmd(cmd, db_manager):
 def main():
     session = PromptSession(completer=command_completer,
                             complete_while_typing=True,
-                            history=FileHistory('.manage_history'),
+                            history=FileHistory('.config/Manage/.manage_history'),
                             auto_suggest=AutoSuggestFromHistory())
 
-    if path.exists(".postgres_url_cached"):
-        urls = open(".postgres_url_cached", "r").read().splitlines()
+    if path.exists(".config/Manage/.postgres_url_cached"):
+        urls = open(".config/Manage/.postgres_url_cached", "r").read().splitlines()
         url_selected = urls[0].split(" ")[1]
 
-    if path.exists(".path_to_geckodriver"):
-        environ['GECKODRIVER_PATH'] = open(".path_to_geckodriver", "r").read()
+    if path.exists(".config/Geckodriver/.path_to_geckodriver"):
+        environ['GECKODRIVER_PATH'] = open(".config/Geckodriver/.path_to_geckodriver", "r").read()
 
     if len(argv) == 1:
         if len(urls) > 1:

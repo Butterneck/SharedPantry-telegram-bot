@@ -1,8 +1,4 @@
-import pytest
-import globalVariables as gv
-import datetime
-from db_connection_postgresql import DB_Connection
-import globalVariables as gv
+from src.DB.DBManager.db_connection_postgresql import DB_Connection
 
 '''
 In caso di fallimento dei test:

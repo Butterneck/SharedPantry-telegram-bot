@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from authenticator import Authenticator
+from src.Auth.authenticator import Authenticator
 
 def lista(bot, update, db_manager):
     """Crea la tastiera personalizzata e invia il messaggio di presentazione"""

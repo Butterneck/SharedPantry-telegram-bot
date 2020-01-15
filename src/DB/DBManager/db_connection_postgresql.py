@@ -3,11 +3,11 @@ import datetime
 import psycopg2
 from sys import exit
 
-from User import User
-from User_Prodotti import User_Prodotti
-from Prodotti import Product
+from src.DB.DBClass.User import User
+from src.DB.DBClass.User_Prodotti import User_Prodotti
+from src.DB.DBClass.Prodotti import Product
 
-init_db = open("dispensa.sql").read()
+init_db = open("../SQL/dispensa.sql").read()
 
 intro = terminalColors.OKGREEN + '[Database]: '
 end = terminalColors.ENDC

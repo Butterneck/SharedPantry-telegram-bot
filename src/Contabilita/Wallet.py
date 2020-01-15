@@ -1,7 +1,7 @@
 import datetime
 from Utils import removeDuplicateInAcquisti, getNumAcquisti
-from authenticator import Authenticator
-from Anno import Anno
+from src.Auth.authenticator import Authenticator
+from src.Contabilita.Anno import Anno
 
 
 class Wallet():
@@ -30,10 +30,6 @@ class Wallet():
 
 
     def sendConto(self, bot, update, db_manager):
-        """
-            Informa l'utente del debito con Ciano
-        """
-
         if not Authenticator().checkAuthentication(update):
             return
 

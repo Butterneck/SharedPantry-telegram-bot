@@ -1,6 +1,5 @@
 from threading import Thread
-import globalVariables as gv
-from contabilita import Wallet
+from src.Contabilita.Wallet import Wallet
 import time
 
 class CheckActivatorThread(Thread):

@@ -1,16 +1,16 @@
 import telegram
 import logging
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters, RegexHandler
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 import os
-from CheckActivatorThread import CheckActivatorThread
-from CheckBackupThread import CheckBackupThread
+from src.CheckerThread.CheckActivatorThread import CheckActivatorThread
+from src.CheckerThread.CheckBackupThread import CheckBackupThread
 from Utils import terminalColors
-from db_connection_postgresql import DB_Connection
-from contabilita import Wallet
+from src.DB.DBManager.db_connection_postgresql import DB_Connection
+from src.Contabilita.Wallet import Wallet
 from functools import partial
-from authenticator import Authenticator
+from src.Auth.authenticator import Authenticator
 
 
 lock = emojize(":lock:", use_aliases=True)
@@ -30,7 +30,7 @@ AGGIORNA_SELEZIONE, AGGIORNA_QUANTITA, AGGIORNA_NOME, NOME, PREZZO, QUANTITA= ra
 
 
 # Funzioni ausiliarie
-from gestisci_ordine import lista, button
+from src.Ordine.gestisci_ordine import lista, button
 
 def aggiungi_prodotto(bot, update):
     update.message.reply_text("Ok, dimmi il nome del prodotto che vuoi aggiungere")
