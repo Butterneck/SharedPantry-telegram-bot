@@ -1,9 +1,8 @@
-from os import environ, path
+from os import environ, path, system
 import logging
 from configparser import ConfigParser
 
 from ..Utils import TerminalColors
-from src.DB.DBManager.db_connection_postgresql import DB_Connection
 
 import telegram
 from telegram.ext import Updater
@@ -31,9 +30,10 @@ class Configuration():
         return [updater, bot, db_manager]
 
     def configure_local_test(self):
-        if not path.isfile('../../.config/Bot/config.ini'):
-            self.first_local_config()
-        config = ConfigParser.read_file(open('../../.config/Bot/config.ini'))
+        config = ConfigParser()
+        if not path.isfile('.config/Bot/config.ini'):
+            self.first_local_config(config)
+        config.read_file(open('.config/Bot/config.ini'))
         db_url = "postgres://" + config['DB']['username'] + (":" + config['DB']['password'] if config['DB']['password'] != '' else '') + "@" + config['DB']['host'] + "/" + config['DB']['name']
         sslRequired = False
         db_name = "LocalTest_DB"
@@ -44,17 +44,18 @@ class Configuration():
         updater.start_polling()
         return [updater, bot, db_manager]
 
-    def first_local_config(self):
+    def first_local_config(self, config):
         # Ask for parameters to be saved in local config and save them to .config/Bot/config.ini
         print('This is the first time you run this bot in LocalTest mode, let\'s config the environment:\n')
-        config = ConfigParser()
+        config['BOT'] = {}
         config['BOT']['TOKEN'] = input('Bot TOKEN: ')
+        config['DB'] = {}
         config['DB']['username'] = input('Database username: ')
         config['DB']['password'] = input('Database password: ')
         config['DB']['host'] = input('Database host: ')
         config['DB']['name'] = input('Database name: ')
         print('Cool! You have configured the environment!')
-        with open('../../.config/Bot/config.ini', 'w') as configfile:
+        with open('.config/Bot/config.ini', 'w') as configfile:
             config.write(configfile)
 
     def configure(self):
