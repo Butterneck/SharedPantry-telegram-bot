@@ -3,9 +3,9 @@ import datetime
 import psycopg2
 from sys import exit
 
-from src.DB.DBClass.User import User
-from src.DB.DBClass.User_Prodotti import User_Prodotti
-from src.DB.DBClass.Prodotti import Product
+from src.DB.DBClasses.User import User
+from src.DB.DBClasses.Transaction import User_Prodotti
+from src.DB.DBClasses.Product import Product
 
 init_db = open("../SQL/dispensa.sql").read()
 
