@@ -2,6 +2,7 @@ from src.Configuration.Configure import Configuration
 import logging
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters
 from src.Messages import help
+from src.Messages import dashboard
 from src.Conversations.start import start, auth
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -23,6 +24,7 @@ def main():
     dp = updater.dispatcher
     dp.add_handler(conv_handler_start)
     dp.add_handler(CommandHandler('help', help))
+    dp.add_handler(CommandHandler('dashboard', dashboard))
 
 
 if __name__ == '__main__':
