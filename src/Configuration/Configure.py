@@ -2,7 +2,7 @@ from os import environ, path
 import logging
 from configparser import ConfigParser
 
-from src.Utils.BackendRequests import request
+import requests
 
 import telegram
 from telegram.ext import Updater
@@ -28,7 +28,7 @@ class Configuration():
             self.first_local_config(config)
         config.read_file(open('.config/Bot/config.ini'))
         environ['BOT_TOKEN'] = config['BOT']['TOKEN']
-        r = request('/getToken', {'token': environ['BOT_TOKEN']})
+        r = requests.post('/getToken', json={'token': environ['BOT_TOKEN']})
         if r.status_code == 200:
             environ['BACKEND_TOKEN'] = json.loads(r.text)['token']
         elif r.status_code == 500:
@@ -58,7 +58,7 @@ class Configuration():
         bot = None
         if env == "Production":
             logging.warning('Running in ProductionMode')
-            r = request('/getToken', {'token': environ['BOT_TOKEN']})
+            r = requests.post('/getToken', json={'token': environ['BOT_TOKEN']})
             if r.status_code == 200:
                 environ['BACKEND_TOKEN'] = json.loads(r.text)['token']
             elif r.status_code == 500:
