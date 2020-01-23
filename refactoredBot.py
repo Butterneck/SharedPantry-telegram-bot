@@ -1,9 +1,10 @@
 from src.Configuration.Configure import Configuration
 import logging
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters, CallbackQueryHandler
-from src.Messages import help
-from src.Messages import dashboard
+from src.Messages.help import help
+from src.Messages.dashboard import dashboard
 from src.Messages.pick import pick, button
+from src.Messages.bill import send_bill_message
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ def main():
     dp.add_handler(CommandHandler('dashboard', dashboard))
     dp.add_handler(CommandHandler('pick', pick))
     dp.add_handler(CallbackQueryHandler(button))
+    dp.add_handler(CommandHandler('bill', send_bill_message))
 
     Configuration().start_listening(updater)
 
