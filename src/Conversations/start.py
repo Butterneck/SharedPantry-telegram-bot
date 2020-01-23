@@ -19,7 +19,7 @@ def start(bot, update):
         update.message.reply_text("Welcome back message")
         return ConversationHandler.END
     else:
-        logging.warning('New user ' + update.message.chat_id + ' is connecting')
+        logging.warning('New user ' + str(update.message.chat_id) + ' is connecting')
         update.message.reply_text("Welcome, put your password, please")
         return AUTH
 
@@ -46,6 +46,6 @@ def auth(bot, update):
             'username': username
         })
     else:
-        logging.info('User ' + update.message.chat_id + ' put wrong password')
+        logging.info('User ' + str(update.message.chat_id) + ' put wrong password')
         update.message.reply_text("Wrong password, type /start again to retry")
         return ConversationHandler.END
