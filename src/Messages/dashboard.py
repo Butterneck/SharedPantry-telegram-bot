@@ -1,15 +1,12 @@
 from os import environ
-import json
-import requests
+from src.Auth.authenticator import Authenticator
+import logging
 
 
 def dashboard(bot, update):
-    environ['BACKEND_TOKEN'] = json.loads(requests.post(
-        environ['BACKEND_URL'] + '/getToken',
-        json = {
-            'token': environ['BOT_TOKEN']
-        }
-    ))
+    if not Authenticator().checkUserAdmin(update.message.chat_id):
+        logging.warning('Non admin user asked for dashboard')
+        return
 
     if environ['BACKEND_TOKEN'] is not None:
         update.message.reply_text("Here is dashboard link: " + '/?token='.join([environ['BACKEND_URL'], environ['BACKEND_TOKEN']]))

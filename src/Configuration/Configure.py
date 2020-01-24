@@ -28,7 +28,7 @@ class Configuration():
             self.first_local_config(config)
         config.read_file(open('.config/Bot/config.ini'))
         environ['BOT_TOKEN'] = config['BOT']['TOKEN']
-        r = requests.post(environ['BACKEND_URL'] + '/getToken', json={'token': environ['BOT_TOKEN']})
+        r = requests.post(environ['BACKEND_URL'] + '/getToken', headers={'token': environ['BOT_TOKEN']})
         if r.status_code == 200:
             environ['BACKEND_TOKEN'] = json.loads(r.text)['token']
         elif r.status_code == 500:
