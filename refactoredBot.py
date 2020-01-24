@@ -4,7 +4,7 @@ from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Fi
 from src.Messages.help import help
 from src.Messages.dashboard import dashboard
 from src.Messages.pick import pick, button
-from src.Messages.bill import send_bill_message
+from src.Messages.bill import send_bill_message, send_monthly_bill_message
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,6 +32,7 @@ def main():
     dp.add_handler(CommandHandler('pick', pick))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(CommandHandler('bill', send_bill_message))
+    dp.add_handler(CommandHandler('month', send_monthly_bill_message))
 
     Configuration().start_listening(updater)
 
