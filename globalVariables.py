@@ -1,2 +1,0 @@
-global nuovoProdotto
-nuovoProdotto = None

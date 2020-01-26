@@ -14,7 +14,7 @@ divieto = emojize(":no_entry_sign:", use_aliases=True)
 
 
 def start(bot, update):
-    from refactoredBot import AUTH
+    from bot import AUTH
     if Authenticator().checkUserExistence(update.message.chat_id):
         update.message.reply_text("Welcome back message")
         return ConversationHandler.END
