@@ -6,7 +6,9 @@ import logging
 
 def request(path, data = {}):
     logging.info('requesting ' + path)
-    return post(environ['BACKEND_URL'] + path, json=data, headers={'token': environ['BACKEND_TOKEN']})
+    r = post(environ['BACKEND_URL'] + path, json=data, headers={'token': environ['BACKEND_TOKEN']})
+    logging.debug(r)
+    return r
 
 
 def validate_response(r):
