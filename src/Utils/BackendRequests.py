@@ -7,7 +7,7 @@ import logging
 def request(path, data = {}):
     logging.info('requesting ' + path)
     r = post(environ['BACKEND_URL'] + path, json=data, headers={'token': environ['BACKEND_TOKEN']})
-    logging.debug(r)
+    logging.info(r.url)
     return r
 
 
