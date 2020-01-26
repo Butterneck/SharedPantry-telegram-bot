@@ -8,6 +8,7 @@ def request(path, data = {}):
     logging.info('requesting ' + path)
     r = post(environ['BACKEND_URL'] + path, json=data, headers={'token': environ['BACKEND_TOKEN']})
     logging.info(r.url)
+    logging.info(r.headers)
     return r
 
 
