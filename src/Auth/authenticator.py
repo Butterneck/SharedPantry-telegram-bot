@@ -11,7 +11,7 @@ class Authenticator():
         if r.status_code == 200:
             return json.loads(r.text)['user'] is not None
         elif r.status_code == 500:
-            logging.info('User ' + chat_id + ' is not logged in')
+            logging.info('User ' + str(chat_id) + ' is not logged in')
             return False
         elif r.status_code == 403:
             logging.warning('Wrong backend token')
