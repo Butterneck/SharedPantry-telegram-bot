@@ -1,38 +1,13 @@
 image: alpine:latest
 
 stages:
-    #- test
     - deploy
-
-#test:
-#    stage: test
-#    script:
-#        - apk add build-base gcc abuild binutils binutils-doc gcc-doc
-#        - apk add libffi
-#        - apk add postgresql-libs
-#        - apk add musl-dev postgresql-dev
-#        - apk add python
-#        - apk add python3
-#        - apk add python2-dev
-#        - apk add python3-dev
-#        - apk add libffi-dev
-#        - apk add py-pip
-#        - pip3 install -r requirements.txt
-#        - pip3 install flask
-#        #Run Database tests
-#        - pytest -vv ./test_db.py
-
 
 deploy:
     stage: deploy
     script:
         - apk add ruby-dev ruby-rdoc git curl
         - gem install dpl
-        - dpl --provider=heroku --app=cianobot --api-key=$HEROKU_API_KEY
-        - echo "Deployed to Production Server https://t.me/cianostavernabot"
-    environment:
-        name: production
-        url: https://t.me/cianostavernabot
-    when: manual
+        - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
     only:
         - master
