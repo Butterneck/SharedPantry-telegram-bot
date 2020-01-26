@@ -9,6 +9,6 @@ def dashboard(bot, update):
         return
 
     if environ['BACKEND_TOKEN'] is not None:
-        update.message.reply_text("Here is dashboard link: " + '/?token='.join([environ['BACKEND_URL'], environ['BACKEND_TOKEN']]))
+        update.message.reply_text("Here is dashboard link: " + '/?token='.join([environ['FRONTEND_URL'], environ['BACKEND_TOKEN']]))
     else:
         update.message.reply_text("Something went wrong on creating dashboard")
