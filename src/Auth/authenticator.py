@@ -20,11 +20,11 @@ class Authenticator():
     def checkUserAdmin(self, chat_id):
         r = request('/getUserFromChatId', {'chat_id': chat_id})
         if r.status_code == 200:
-            if json.loads(r.text)['is_admin']:
-                logging.info('User ' + json.loads(r.text)['username'] + ' is an admin')
+            if json.loads(r.text)['user']['is_admin']:
+                logging.info('User ' + json.loads(r.text)['user']['username'] + ' is an admin')
                 return True
             else:
-                logging.info('User ' + json.loads(r.text)['username'] + ' is not an admin')
+                logging.info('User ' + json.loads(r.text)['user']['username'] + ' is not an admin')
                 return False
         elif r.status_code == 500:
             logging.info('User ' + str(chat_id) + ' is not logged in')
