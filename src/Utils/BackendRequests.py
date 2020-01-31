@@ -7,7 +7,7 @@ import logging
 def request(path, data=None):
     logging.info('requesting ' + path)
     logging.info('token:' + environ['BACKEND_TOKEN'])
-    r = post(environ['BACKEND_URL'] + path, json=data, headers={'token': environ['BACKEND_TOKEN']})
+    r = post(environ['BACKEND_URL'] + '/api' + path, json=data, headers={'token': environ['BACKEND_TOKEN']})
     return r
 
 
