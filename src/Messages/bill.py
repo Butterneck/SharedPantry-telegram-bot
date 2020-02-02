@@ -6,9 +6,11 @@ from src.Utils.BackendRequests import request, validate_response
 from src.Auth.authenticator import Authenticator
 from src.Utils.Year import Year
 
+from src.Utils.Translator import translate as _
+
 
 def send_monthly_bill_message(bot, update):
-    admin_message = "Here is who bought something this month:\n"
+    admin_message = _('ADMIN_MSG', update.message.chat_id) + '\n'
     previous_month = Year().year[date.today().month - 1].getPreviousMonth()
     previous_month_year = date.today().year - 1 if previous_month.monthNum == 12 else date.today().year
 
@@ -24,13 +26,12 @@ def send_monthly_bill_message(bot, update):
     start_date = str(date(previous_month_year, previous_month.getNumMonth(), 1))
     end_date = str(date(previous_month_year, previous_month.getNumMonth(), previous_month.getNumDays()))
     for user in json.loads(request('/getAllUsers').text)['users']:
-        print(user)
         bill, totalPrice = get_bill_message(user['chat_id'], start_date, end_date, allProducts)
         if bill is not None:
             admin_message = admin_message + user['username'] + ": €" + str(totalPrice/100) + "\n"
-            user_message = "Here is what you bought in previous month:\n"
+            user_message = _('USER_MSG', user['chat_id']) + '\n'
             user_message += bill
-            user_message += "\nYou'll have to pay admins directly"
+            user_message += '\n' + _('PAY_MSG', user['chat_id'])
             bot.sendMessage(chat_id=user['chat_id'], text=user_message)
 
     for admin in json.loads(request('/getAllAdmins').text)['admins']:
@@ -42,14 +43,14 @@ def send_bill_message(bot, update):
         return
     start_date = str(datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0))
     end_date = str(datetime.now().replace(microsecond=0))
-    message = "This month you bought this:\n"
+    message = _('BILL_BEGIN', update.message.chat_id) + '\n'
     r = request('/getAllProducts')
     if not validate_response(r):
         return
     allProducts = json.loads(r.text)['products']
     bill, totalPrice = get_bill_message(update.message.chat_id, start_date, end_date, allProducts)
     if bill is None:
-        message = "You did'n buy anything this month yet"
+        message = _('EMPTY_BILL', update.message.chat_id)
     else:
         message += bill
     update.message.reply_text(message)
@@ -86,9 +87,8 @@ def calculate_debit(allProducts, chat_id, start_date, end_date):
         totalPrice += partialPrice
         message = message + product['name'] + ' x' + str(quantity) + '= €' + str(partialPrice/100) + '\n'
 
-    print(totalPrice)
     if totalPrice:
-        message = message + 'Total bill: €' + str(totalPrice/100)
+        message = message + _('BILL_TOTAL', chat_id) + ' €' + str(totalPrice/100)
         return [message, totalPrice]
     else:
         return [None, None]

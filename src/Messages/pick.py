@@ -5,6 +5,8 @@ import logging
 
 from src.Utils.BackendRequests import request, validate_response
 
+from src.Utils.Translator import translate as _
+
 
 def pick(bot, update):
     if not Authenticator().checkUserExistence(update.message.chat_id):
@@ -18,9 +20,9 @@ def pick(bot, update):
         keyboard = build_keyboard(products)
         if len(keyboard):
             reply_markup = InlineKeyboardMarkup(keyboard)
-            update.message.reply_text("These are all available products: ", reply_markup=reply_markup)
+            update.message.reply_text(_('AVAILABLE_PRODUCTS', update.message.chat_id), reply_markup=reply_markup)
         else:
-            update.message.reply_text("There are no products available")
+            update.message.reply_text(_('NO_AVAILABLE_PRODUCTS', update.message.chat_id))
     else:
         return
 
@@ -54,7 +56,7 @@ def build_keyboard(products):
 def button(bot, update):
     data = update.callback_query
     if data.data == 'cancelOrder':
-        data.edit_message_text(text="Order cancelled")
+        data.edit_message_text(text=_('ORDER_CANCELLED', update.message.chat_id))
         return
     r = request('/addTransaction', {
         'chat_id': update.callback_query.message.chat_id,
@@ -63,10 +65,10 @@ def button(bot, update):
     })
     if r.status_code == 200:
         logging.info('new transaction correctly added')
-        data.edit_message_text(text="Awesome!")
+        data.edit_message_text(text=_('ORDER_COMPLETED', update.message.chat_id))
     elif r.status_code == 500:
         logging.info('new transaction failed to add')
-        data.edit_message_text(text="I'm so sorry, it's finished")
+        data.edit_message_text(text=_('FINISHED_PRODUCT', update.message.chat_id))
     else:
         logging.warning('Wrong backend token')
 

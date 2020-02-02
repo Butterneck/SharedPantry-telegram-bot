@@ -1,0 +1,75 @@
+NEW_USER_WELCOME:
+  en: Welcome, put your password please
+  it: Benvenuto, inserisci la password per accedere
+
+OLD_USER_WELCOME:
+  en: Welcome back, you're already signed in, use command /help to know what I can do for you
+  it: Bentornato, sei gia' registrato, usa il comando /help per scoprire come posso esserti utile
+    
+LOGGED_IN:
+  en: Pantry unlocked! Please use /pick to select what you bought
+  it: Dispensa sbloccata! Usa il comando /prendi per selezionare cosa hai preso dalla dispensa
+  
+WRONG_PASSWORD:
+  en: Wrong password! Type /start to try again
+  it: Password sbagliata! usa /start per riprovare
+
+ADMIN_MSG:
+  en: Here is who bought something last month':'
+  it: Ecco chi ha acquistato qualcosa il mese scorso':'
+
+USER_MSG:
+  en: Here is what you bought the previous month':'
+  it: Ecco quello che hai acquistato il mese scorso dalla dispensa':'
+  
+PAY_MSG:
+  en: You'll have to pay admin directly
+  it: Dovrai pagare il dovuto direttamente all'amministratore
+  
+EMPTY_BIL:
+  en: You did'n buy anything this month yet
+  it: Non hai ancora acquistato niente questo mese
+  
+BILL_BEGIN:
+  en: This month you bought this':'
+  it: Questo mese hai preso dalla dispensa le seguenti cose':'
+  
+BILL_TOTAL:
+  en: Total bill':'
+  it: Totale':'
+
+DASHBOARD:
+  en: Here is your dashboard link':'
+  it: Ecco il link alla dashboard per la gestione della dispensa':'
+
+REMEMBER_IS_TEMP:
+  en: Remember that this link is only temporary, always ask for a new link when you want to make some changes
+  it: Ricorda che il link e' solamente temporaneo, richiedi un nuovo link ogni volta che vuoi fare visualizzare la dashboard
+
+ERROR_ON_DASHBAORD:
+  en: Oops! Something went wrong on creating dashboard link
+  it: Oops! Qualcosa e' andato storto durante la creazine del link per la dashboard
+
+HELP:
+  en: This is the help message
+  it: Questo e' il messaggio di aiuto
+
+AVAILABLE_PRODUCTS:
+  en: These are all available products':'
+  it: Questo e' quello che offre la dispensa, scegli responsabilmente':'
+
+NO_AVAILABLE_PRODUCTS:
+  en: There are no products available
+  it: Non c'e' nessun prodotto disponibile al momento, torna piu' tardi
+
+FINISHED_PRODUCT:
+  en: I'm sorry, it's finshed
+  it: Sono spiacente, e' finito
+
+ORDER_CANCELLED:
+  en: Order cancelled!
+  it: Ordine cancellato!
+
+ORDER_COMPLETED:
+  en: Awesome!
+  it: Fantastico, torna presto a trovarmi

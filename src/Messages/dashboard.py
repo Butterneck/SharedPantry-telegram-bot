@@ -2,6 +2,8 @@ from os import environ
 from src.Auth.authenticator import Authenticator
 import logging
 
+from src.Utils.Translator import translate as _
+
 
 def dashboard(bot, update):
     if not Authenticator().checkUserAdmin(update.message.chat_id):
@@ -9,6 +11,6 @@ def dashboard(bot, update):
         return
 
     if environ['BACKEND_TOKEN'] is not None:
-        update.message.reply_text("Here is dashboard link: " + '/'.join([environ['FRONTEND_URL'], environ['BACKEND_TOKEN']]))
+        update.message.reply_text(_('DASHBOARD', update.message.chat_id) + '/'.join([environ['FRONTEND_URL'], environ['BACKEND_TOKEN']]) + '\n' + _('REMEMBER_IS_TEMP', update.message.chat_id))
     else:
-        update.message.reply_text("Something went wrong on creating dashboard")
+        update.message.reply_text(_('ERROR_ON_DASHBOARD', update.message.chat_id))
