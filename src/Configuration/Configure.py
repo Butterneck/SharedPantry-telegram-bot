@@ -23,10 +23,10 @@ class Configuration():
 
     def configure_local_test(self):
         config = ConfigParser()
-        if not path.isfile('.config/Bot/config.ini'):
+        if not path.isfile('.config/config.ini'):
             logging.warning('Running FirstTime local config')
             self.first_local_config(config)
-        config.read_file(open('.config/Bot/config.ini'))
+        config.read_file(open('.config/config.ini'))
         environ['BOT_TOKEN'] = config['BOT']['TOKEN']
         r = requests.post(environ['BACKEND_URL'] + '/api/getToken', headers={'token': environ['BOT_TOKEN']})
         if r.status_code == 200:
@@ -42,14 +42,14 @@ class Configuration():
         return updater, bot
 
     def first_local_config(self, config):
-        # Ask for parameters to be saved in local config and save them to .config/Bot/config.ini
+        # Ask for parameters to be saved in local config and save them to .config/config.ini
         print('This is the first time you run this bot in LocalTest mode, let\'s config the environment:\n')
         config['BOT'] = {}
         config['BOT']['TOKEN'] = input('Bot TOKEN: ')
-        with open('.config/Bot/config.ini', 'w') as configfile:
+        with open('.config/config.ini', 'w') as configfile:
             config.write(configfile)
-        print('Cool! You have configured the environment!\nConfiguration file can be found on .config/Bot/config.ini')
-        logging.info('Configuration correctly saved on .config/Bot/config.ini')
+        print('Cool! You have configured the environment!\nConfiguration file can be found on .config/config.ini')
+        logging.info('Configuration correctly saved on .config/config.ini')
 
     def configure(self):
         # Getting backend token
