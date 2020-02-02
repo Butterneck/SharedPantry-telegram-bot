@@ -68,7 +68,7 @@ def lang_chooser(update, context):
     lang = update.callback_query
     request('/updateUserLang', {
         'lang': lang,
-        'chat_id': context.chat_data.id
+        'chat_id': context.chat_data['id']
     })
     lang.edit_message_text(_('LANGUAGE_SELECTED', update.message.chat_id))
     return ConversationHandler.END
