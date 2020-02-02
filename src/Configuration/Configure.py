@@ -37,7 +37,7 @@ class Configuration():
         elif r.status_code == 403:
             logging.error('/getToken got wrong bot token')
             exit(1)
-        updater = Updater(environ['BOT_TOKEN'])
+        updater = Updater(environ['BOT_TOKEN'], use_context=True)
         bot = telegram.Bot(environ['BOT_TOKEN'])
         return updater, bot
 
@@ -67,7 +67,7 @@ class Configuration():
             elif r.status_code == 403:
                 logging.error('/getToken got wrong bot token')
                 exit(1)
-            updater = Updater(environ['BOT_TOKEN'])
+            updater = Updater(environ['BOT_TOKEN'], use_context=True)
             bot = telegram.Bot(environ['BOT_TOKEN'])
         elif env == "LocalTest":
             logging.warning('Running in LocalTestMode')

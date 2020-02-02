@@ -64,11 +64,11 @@ def auth(bot, update):
         return ConversationHandler.END
 
 
-def lang_chooser(bot, update):
+def lang_chooser(bot, update, context):
     lang = update.callback_query
     request('/updateUserLang', {
         'lang': lang,
-        'chat_id': update.message.chat_id
+        'chat_id': context.chat_data.id
     })
     lang.edit_message_text(_('LANGUAGE_SELECTED', update.message.chat_id))
     return ConversationHandler.END
