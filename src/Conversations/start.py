@@ -1,6 +1,7 @@
 from os import environ
 from telegram.ext import ConversationHandler
 from emoji import emojize
+import json
 
 import logging
 
@@ -49,10 +50,12 @@ def auth(update, context):
         if not lang in supported_langs:
             lang = 'en'
 
+        is_admin = True if json.loads(request('/getAllAdmins').text)['admins'] == [] else False
         request('/addUser', {
             'chat_id': update.message.chat_id,
             'username': username,
-            'lang': lang
+            'lang': lang,
+            'is_admin': is_admin
         })
         update.message.reply_text(unlock + _('PATRY_UNLOCKED', update.message.chat_id))
     else:
