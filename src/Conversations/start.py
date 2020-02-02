@@ -11,8 +11,6 @@ from src.Auth.authenticator import Authenticator
 
 from src.Utils.Translator import translate as _
 
-from bot import LANG
-
 lock = emojize(":lock:", use_aliases=True)
 unlock = emojize(":unlock:", use_aliases=True)
 forbidden = emojize(":no_entry_sign:", use_aliases=True)
@@ -32,6 +30,7 @@ def start(bot, update):
 
 
 def auth(bot, update):
+    from bot import LANG
     if update.message.text == environ['Password']:
         user = update.message.from_user
         if user.first_name and user.last_name:

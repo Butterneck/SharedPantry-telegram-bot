@@ -31,9 +31,12 @@ def main():
     dp.add_handler(CommandHandler('help', help))
     dp.add_handler(CommandHandler('dashboard', dashboard))
     dp.add_handler(CommandHandler('pick', pick))
+    dp.add_handler(CommandHandler('prendi', pick))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(CommandHandler('bill', send_bill_message))
+    dp.add_handler(CommandHandler('conto', send_bill_message))
     dp.add_handler(CommandHandler('month', send_monthly_bill_message))
+    dp.add_handler(CommandHandler('contomensile', send_monthly_bill_message))
 
     Configuration().start_listening(updater)
 
