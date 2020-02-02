@@ -1,10 +1,18 @@
+NEW_USER_WELCOME:
+  en: Welcome, put your password please
+  it: Benvenuto, inserisci la password per sbloccare la dispensa
+
 OLD_USER_WELCOME:
   en: Welcome back, you're already signed in, use command /help to know what I can do for you
   it: Bentornato, sei gia' registrato, usa il comando /help per scoprire come posso esserti utile
     
-LANGUAGE_SELECTED:
+PATRY_UNLOCKED:
   en: Awesome! Please use /pick to select what you bought
   it: Fantastico! Usa il comando /prendi per selezionare cosa hai preso dalla dispensa
+
+WRONG_PANTRY_PASSWORD:
+  en: Wrong password! Type /start to try again
+  it: Password sbagliata, usa il comando /start per provare di nuovo
 
 ADMIN_MSG:
   en: Here is who bought something last month':'

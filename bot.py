@@ -9,9 +9,9 @@ from src.Messages.bill import send_bill_message, send_monthly_bill_message
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-AUTH, LANG = range(2)
+AUTH = range(1)
 
-from src.Conversations.start import start, auth, lang_chooser
+from src.Conversations.start import start, auth
 
 
 def main():
@@ -20,8 +20,7 @@ def main():
     conv_handler_start = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            AUTH: [MessageHandler(Filters.text, auth)],
-            LANG: [CallbackQueryHandler(lang_chooser)]
+            AUTH: [MessageHandler(Filters.text, auth)]
         },
         fallbacks=[]
     )

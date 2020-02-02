@@ -1,6 +1,5 @@
 from os import environ
 from telegram.ext import ConversationHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 
 import logging
@@ -9,7 +8,7 @@ from src.Utils.BackendRequests import request
 
 from src.Auth.authenticator import Authenticator
 
-from src.Utils.Translator import translate as _
+from src.Utils.Translator import translate as _, supported_langs
 
 lock = emojize(":lock:", use_aliases=True)
 unlock = emojize(":unlock:", use_aliases=True)
@@ -24,8 +23,9 @@ def start(update, context):
         update.message.reply_text(_('OLD_USER_WELCOME', update.message.chat_id))
         return ConversationHandler.END
     else:
+        from src.Utils.Translator import load_translations
         logging.warning('New user ' + str(update.message.chat_id) + ' is connecting')
-        update.message.reply_text(lock + ' Welcome, put your password please')
+        update.message.reply_text(lock + ' ' + load_translations()['NEW_USER_WELCOME'][update._effective_user.language_code])
         return AUTH
 
 
@@ -46,31 +46,19 @@ def auth(update, context):
             username = 'Unknown'
             logging.warning('New user ' + username + ' is connected')
 
+        lang = update._effective_user.language_code
+        if not lang in supported_langs:
+            lang = 'en'
+
         request('/addUser', {
             'chat_id': update.message.chat_id,
-            'username': username
+            'username': username,
+            'lang': lang
         })
-
-        keyboard = [[
-            InlineKeyboardButton(italian, callback_data='it'),
-            InlineKeyboardButton(english, callback_data='en')
-        ]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text(unlock + 'Pantry unlocked! Please select your language', reply_markup=reply_markup)
+        update.message.reply_text(unlock + _('PATRY_UNLOCKED', update.message.chat_id))
         return LANG
     else:
+        from src.Utils.Translator import load_translations
         logging.info('User ' + str(update.message.chat_id) + ' put wrong password')
-        update.message.reply_text(forbidden + 'Wrong password! Type /start to try again')
+        update.message.reply_text(forbidden + load_translations()['NEW_USER_WELCOME'][update._effective_user.language_code])
         return ConversationHandler.END
-
-
-def lang_chooser(update, context):
-    lang = update.callback_query
-    print(context)
-    print(context.chat_data)
-    request('/updateUserLang', {
-        'lang': lang,
-        'chat_id': context.chat_data['id']
-    })
-    lang.edit_message_text(_('LANGUAGE_SELECTED', update.message.chat_id))
-    return ConversationHandler.END
