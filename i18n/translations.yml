@@ -1,18 +1,10 @@
-NEW_USER_WELCOME:
-  en: Welcome, put your password please
-  it: Benvenuto, inserisci la password per accedere
-
 OLD_USER_WELCOME:
   en: Welcome back, you're already signed in, use command /help to know what I can do for you
   it: Bentornato, sei gia' registrato, usa il comando /help per scoprire come posso esserti utile
     
-LOGGED_IN:
-  en: Pantry unlocked! Please use /pick to select what you bought
-  it: Dispensa sbloccata! Usa il comando /prendi per selezionare cosa hai preso dalla dispensa
-  
-WRONG_PASSWORD:
-  en: Wrong password! Type /start to try again
-  it: Password sbagliata! usa /start per riprovare
+LANGUAGE_SELECTED:
+  en: Awesome! Please use /pick to select what you bought
+  it: Fantastico! Usa il comando /prendi per selezionare cosa hai preso dalla dispensa
 
 ADMIN_MSG:
   en: Here is who bought something last month':'
@@ -26,13 +18,13 @@ PAY_MSG:
   en: You'll have to pay admin directly
   it: Dovrai pagare il dovuto direttamente all'amministratore
   
-EMPTY_BIL:
+EMPTY_BILL:
   en: You did'n buy anything this month yet
   it: Non hai ancora acquistato niente questo mese
   
 BILL_BEGIN:
-  en: This month you bought this':'
-  it: Questo mese hai preso dalla dispensa le seguenti cose':'
+  en: This month you bought this':'\n
+  it: Questo mese hai preso dalla dispensa le seguenti cose':'\n
   
 BILL_TOTAL:
   en: Total bill':'

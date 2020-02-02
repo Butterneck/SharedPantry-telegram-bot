@@ -1,5 +1,6 @@
 from os import environ
 from telegram.ext import ConversationHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from emoji import emojize
 
 import logging
@@ -10,9 +11,13 @@ from src.Auth.authenticator import Authenticator
 
 from src.Utils.Translator import translate as _
 
+from bot import LANG
+
 lock = emojize(":lock:", use_aliases=True)
 unlock = emojize(":unlock:", use_aliases=True)
 forbidden = emojize(":no_entry_sign:", use_aliases=True)
+italian = emojize(':it:', use_aliases=True)
+english = emojize(':uk:', use_aliases=True)
 
 
 def start(bot, update):
@@ -22,13 +27,12 @@ def start(bot, update):
         return ConversationHandler.END
     else:
         logging.warning('New user ' + str(update.message.chat_id) + ' is connecting')
-        update.message.reply_text(lock + _('NEW_USER_WELCOME', update.message.chat_id))
+        update.message.reply_text(lock + ' Welcome, put your password please')
         return AUTH
 
 
 def auth(bot, update):
     if update.message.text == environ['Password']:
-        update.message.reply_text(unlock + _('LOGGED_IN', update.message.chat_id))
         user = update.message.from_user
         if user.first_name and user.last_name:
             username = ' '.join([user.first_name, user.last_name])
@@ -47,7 +51,25 @@ def auth(bot, update):
             'chat_id': update.message.chat_id,
             'username': username
         })
+
+        keyboard = [
+            InlineKeyboardButton(italian, callback_data='it'),
+            InlineKeyboardButton(english, callback_data='en')
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text(unlock + 'Pantry unlocked! Please select your language', reply_markup=reply_markup)
+        return LANG
     else:
         logging.info('User ' + str(update.message.chat_id) + ' put wrong password')
-        update.message.reply_text(forbidden + _('WRONG_PASSWORD', update.message.chat_id))
+        update.message.reply_text(forbidden + 'Wrong password! Type /start to try again')
         return ConversationHandler.END
+
+
+def lang_chooser(bot, update):
+    lang = update.callback_query
+    request('/updateUserLang', {
+        'lang': lang,
+        'chat_id': update.message.chat_id
+    })
+    lang.edit_message_text(_('LANGUAGE_SELECTED', update.message.chat_id))
+    return ConversationHandler.END
