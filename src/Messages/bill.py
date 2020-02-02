@@ -9,7 +9,7 @@ from src.Utils.Year import Year
 from src.Utils.Translator import translate as _
 
 
-def send_monthly_bill_message(bot, update):
+def send_monthly_bill_message(update, context):
     admin_message = _('ADMIN_MSG', update.message.chat_id) + '\n'
     previous_month = Year().year[date.today().month - 1].getPreviousMonth()
     previous_month_year = date.today().year - 1 if previous_month.monthNum == 12 else date.today().year
@@ -32,13 +32,13 @@ def send_monthly_bill_message(bot, update):
             user_message = _('USER_MSG', user['chat_id']) + '\n'
             user_message += bill
             user_message += '\n' + _('PAY_MSG', user['chat_id'])
-            bot.sendMessage(chat_id=user['chat_id'], text=user_message)
+            context.bot.sendMessage(chat_id=user['chat_id'], text=user_message)
 
     for admin in json.loads(request('/getAllAdmins').text)['admins']:
-        bot.sendMessage(chat_id=admin['chat_id'], text=admin_message)
+        context.bot.sendMessage(chat_id=admin['chat_id'], text=admin_message)
 
 
-def send_bill_message(bot, update):
+def send_bill_message(update):
     if not Authenticator().checkUserExistence(update.message.chat_id):
         return
     start_date = str(datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0))

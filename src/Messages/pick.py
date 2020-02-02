@@ -8,7 +8,7 @@ from src.Utils.BackendRequests import request, validate_response
 from src.Utils.Translator import translate as _
 
 
-def pick(bot, update):
+def pick(update):
     if not Authenticator().checkUserExistence(update.message.chat_id):
         return
 
@@ -53,7 +53,7 @@ def build_keyboard(products):
     return keyboard
 
 
-def button(bot, update):
+def button(update):
     data = update.callback_query
     if data.data == 'cancelOrder':
         data.edit_message_text(text=_('ORDER_CANCELLED', update.message.chat_id))
