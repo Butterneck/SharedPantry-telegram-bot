@@ -15,12 +15,12 @@ WRONG_PANTRY_PASSWORD:
   it: "Password sbagliata, usa il comando /start per provare di nuovo"
 
 ADMIN_MSG:
-  en: "Here is who bought something last month':'"
-  it: "Ecco chi ha acquistato qualcosa il mese scorso':'"
+  en: "Here is who bought something last month:"
+  it: "Ecco chi ha acquistato qualcosa il mese scorso:"
 
 USER_MSG:
-  en: "Here is what you bought the previous month':'"
-  it: "Ecco quello che hai acquistato il mese scorso dalla dispensa':'"
+  en: "Here is what you bought the previous month:"
+  it: "Ecco quello che hai acquistato il mese scorso dalla dispensa:"
   
 PAY_MSG:
   en: "You'll have to pay admin directly"
@@ -31,16 +31,16 @@ EMPTY_BILL:
   it: "Non hai ancora acquistato niente questo mese"
   
 BILL_BEGIN:
-  en: "This month you bought this':'"
-  it: "Questo mese hai preso dalla dispensa le seguenti cose':'"
+  en: "This month you bought this:"
+  it: "Questo mese hai preso dalla dispensa le seguenti cose:"
   
 BILL_TOTAL:
-  en: "Total bill':'"
-  it: "Totale':'"
+  en: "Total bill:"
+  it: "Totale:"
 
 DASHBOARD:
-  en: "Here is your dashboard link':'"
-  it: "Ecco il link alla dashboard per la gestione della dispensa':'"
+  en: "Here is your dashboard link:"
+  it: "Ecco il link alla dashboard per la gestione della dispensa:"
 
 REMEMBER_IS_TEMP:
   en: "Remember that this link is only temporary, always ask for a new link when you want to make some changes"
@@ -55,8 +55,8 @@ HELP:
   it: "Questo e' il messaggio di aiuto"
 
 AVAILABLE_PRODUCTS:
-  en: "These are all available products':'"
-  it: "Questo e' quello che offre la dispensa, scegli responsabilmente':'"
+  en: "These are all available products:"
+  it: "Questo e' quello che offre la dispensa, scegli responsabilmente:"
 
 NO_AVAILABLE_PRODUCTS:
   en: "There are no products available"
