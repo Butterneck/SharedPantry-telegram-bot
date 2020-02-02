@@ -56,7 +56,7 @@ def build_keyboard(products):
 def button(update, context):
     data = update.callback_query
     if data.data == 'cancelOrder':
-        data.edit_message_text(text=_('ORDER_CANCELLED', update.message.chat_id))
+        data.edit_message_text(text=_('ORDER_CANCELLED', update.callback_query.message.chat.id))
         return
     r = request('/addTransaction', {
         'chat_id': update.callback_query.message.chat_id,
