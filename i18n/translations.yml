@@ -73,3 +73,15 @@ ORDER_CANCELLED:
 ORDER_COMPLETED:
   en: "Awesome!"
   it: "Fantastico, torna presto a trovarmi"
+
+PICK:
+  en: "/pick"
+  it: "/prendi"
+
+BILL:
+  en: "/bill"
+  it: "/conto"
+
+DASHBOARD:
+  en: "/dashboard"
+  it: "/dashboard"

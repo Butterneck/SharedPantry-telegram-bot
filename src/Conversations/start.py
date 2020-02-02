@@ -1,5 +1,6 @@
 from os import environ
 from telegram.ext import ConversationHandler
+from telegram import ReplyKeyboardMarkup
 from emoji import emojize
 import json
 
@@ -21,7 +22,11 @@ english = emojize(':uk:', use_aliases=True)
 def start(update, context):
     from bot import AUTH
     if Authenticator().checkUserExistence(update.message.chat_id):
-        update.message.reply_text(_('OLD_USER_WELCOME', update.message.chat_id))
+        if Authenticator().checkUserAdmin(update.message.chat_id):
+            reply_markup = ReplyKeyboardMarkup([[_('PICK', update.message.chat_id), _('BILL', update.message.chat_id)], [_('DASHBOARD', update.message.chat_id)]])
+        else:
+            reply_markup = ReplyKeyboardMarkup([[_('PICK', update.message.chat_id)], [_('BILL', update.message.chat_id)]])
+        update.message.reply_text(_('OLD_USER_WELCOME', update.message.chat_id), reply_markup=reply_markup)
         return ConversationHandler.END
     else:
         from src.Utils.Translator import load_translations
@@ -57,7 +62,13 @@ def auth(update, context):
             'lang': lang,
             'is_admin': is_admin
         })
-        update.message.reply_text(unlock + _('PATRY_UNLOCKED', update.message.chat_id))
+        if Authenticator().checkUserAdmin(update.message.chat_id):
+            reply_markup = ReplyKeyboardMarkup([[_('PICK', update.message.chat_id), _('BILL', update.message.chat_id)],
+                                                [_('DASHBOARD', update.message.chat_id)]])
+        else:
+            reply_markup = ReplyKeyboardMarkup(
+                [[_('PICK', update.message.chat_id)], [_('BILL', update.message.chat_id)]])
+        update.message.reply_text(unlock + _('PATRY_UNLOCKED', update.message.chat_id), reply_markup=reply_markup)
     else:
         from src.Utils.Translator import load_translations
         logging.info('User ' + str(update.message.chat_id) + ' put wrong password')
