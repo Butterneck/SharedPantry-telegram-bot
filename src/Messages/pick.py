@@ -65,10 +65,10 @@ def button(update, context):
     })
     if r.status_code == 200:
         logging.info('new transaction correctly added')
-        data.edit_message_text(text=_('ORDER_COMPLETED', update.message.chat_id))
+        data.edit_message_text(text=_('ORDER_COMPLETED', update.callback_query.message.chat.id))
     elif r.status_code == 500:
         logging.info('new transaction failed to add')
-        data.edit_message_text(text=_('FINISHED_PRODUCT', update.message.chat_id))
+        data.edit_message_text(text=_('FINISHED_PRODUCT', update.callback_query.message.chat.id))
     else:
         logging.warning('Wrong backend token')
 
