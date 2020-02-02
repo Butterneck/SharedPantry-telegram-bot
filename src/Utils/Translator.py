@@ -1,5 +1,7 @@
 import yaml
 from src.Utils.BackendRequests import request
+import json
+import logging
 
 
 supported_langs = ['en', 'it']
@@ -11,8 +13,15 @@ def load_translations():
 
 
 def translate(string, chat_id):
-    lang = request('/getUserFromChatId', {
+    r = request('/getUserFromChatId', {
         'chat_id': chat_id
-    })['user']['lang']
-    t = load_translations()
-    return t[string][lang]
+    })
+    print(r)
+    if r.status_code == 200:
+        return load_translations()[string][json.loads(r.text)['user']['lang']]
+    elif r.status_code == 500:
+        logging.info('User ' + str(chat_id) + ' is not logged in')
+        return False
+    elif r.status_code == 403:
+        logging.warning('Wrong backend token')
+        exit(1)

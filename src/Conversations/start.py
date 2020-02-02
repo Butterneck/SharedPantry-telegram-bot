@@ -30,7 +30,6 @@ def start(update, context):
 
 
 def auth(update, context):
-    from bot import LANG
     if update.message.text == environ['Password']:
         user = update.message.from_user
         if user.first_name and user.last_name:
@@ -56,9 +55,8 @@ def auth(update, context):
             'lang': lang
         })
         update.message.reply_text(unlock + _('PATRY_UNLOCKED', update.message.chat_id))
-        return LANG
     else:
         from src.Utils.Translator import load_translations
         logging.info('User ' + str(update.message.chat_id) + ' put wrong password')
-        update.message.reply_text(forbidden + load_translations()['NEW_USER_WELCOME'][update._effective_user.language_code])
+        update.message.reply_text(forbidden + load_translations()['WRONG_PANTRY_PASSWORD'][update._effective_user.language_code])
         return ConversationHandler.END
