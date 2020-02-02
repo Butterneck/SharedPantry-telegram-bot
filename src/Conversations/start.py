@@ -51,10 +51,10 @@ def auth(bot, update):
             'username': username
         })
 
-        keyboard = [
+        keyboard = [[
             InlineKeyboardButton(italian, callback_data='it'),
             InlineKeyboardButton(english, callback_data='en')
-        ]
+        ]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text(unlock + 'Pantry unlocked! Please select your language', reply_markup=reply_markup)
         return LANG
