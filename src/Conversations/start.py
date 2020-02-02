@@ -66,6 +66,8 @@ def auth(update, context):
 
 def lang_chooser(update, context):
     lang = update.callback_query
+    print(context)
+    print(context.chat_data)
     request('/updateUserLang', {
         'lang': lang,
         'chat_id': context.chat_data['id']
