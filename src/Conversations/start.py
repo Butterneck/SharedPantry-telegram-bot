@@ -18,7 +18,7 @@ italian = emojize(':it:', use_aliases=True)
 english = emojize(':uk:', use_aliases=True)
 
 
-def start(update):
+def start(update, context):
     from bot import AUTH
     if Authenticator().checkUserExistence(update.message.chat_id):
         update.message.reply_text(_('OLD_USER_WELCOME', update.message.chat_id))
@@ -29,7 +29,7 @@ def start(update):
         return AUTH
 
 
-def auth(update):
+def auth(update, context):
     from bot import LANG
     if update.message.text == environ['Password']:
         user = update.message.from_user

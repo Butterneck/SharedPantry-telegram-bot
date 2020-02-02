@@ -5,7 +5,7 @@ import logging
 from src.Utils.Translator import translate as _
 
 
-def dashboard(update):
+def dashboard(update, context):
     if not Authenticator().checkUserAdmin(update.message.chat_id):
         logging.warning('Non admin user asked for dashboard')
         return

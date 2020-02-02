@@ -38,7 +38,7 @@ def send_monthly_bill_message(update, context):
         context.bot.sendMessage(chat_id=admin['chat_id'], text=admin_message)
 
 
-def send_bill_message(update):
+def send_bill_message(update, context):
     if not Authenticator().checkUserExistence(update.message.chat_id):
         return
     start_date = str(datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0))
