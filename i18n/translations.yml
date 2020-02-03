@@ -38,7 +38,7 @@ BILL_TOTAL:
   en: "Total bill:"
   it: "Totale:"
 
-DASHBOARD:
+DASHBOARD_MSG:
   en: "Here is your dashboard link:"
   it: "Ecco il link alla dashboard per la gestione della dispensa:"
 

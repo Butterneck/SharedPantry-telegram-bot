@@ -11,6 +11,6 @@ def dashboard(update, context):
         return
 
     if environ['BACKEND_TOKEN'] is not None:
-        update.message.reply_text(_('DASHBOARD', update.message.chat_id) + '/'.join([environ['FRONTEND_URL'], environ['BACKEND_TOKEN']]) + '\n' + _('REMEMBER_IS_TEMP', update.message.chat_id))
+        update.message.reply_text(_('DASHBOARD_MSG', update.message.chat_id) +' ' + '/'.join([environ['FRONTEND_URL'], environ['BACKEND_TOKEN']]) + '\n' + _('REMEMBER_IS_TEMP', update.message.chat_id))
     else:
         update.message.reply_text(_('ERROR_ON_DASHBOARD', update.message.chat_id))
