@@ -69,6 +69,7 @@ def auth(update, context):
             reply_markup = ReplyKeyboardMarkup(
                 [[_('PICK', update.message.chat_id)], [_('BILL', update.message.chat_id)]])
         update.message.reply_text(unlock + _('PATRY_UNLOCKED', update.message.chat_id), reply_markup=reply_markup)
+        return ConversationHandler.END
     else:
         from src.Utils.Translator import load_translations
         logging.info('User ' + str(update.message.chat_id) + ' put wrong password')
